@@ -1,0 +1,253 @@
+{
+    "tool": "NIGHT HUNTER",
+    "module": "Advanced Phishing Analyzer",
+    "version": "3.0.0",
+    "target": "itvedant.com",
+    "normalized_url": "http://itvedant.com/",
+    "final_url": "https://www.itvedant.com/",
+    "risk_score": 29,
+    "risk_level": "LOW",
+    "findings": [
+        {
+            "category": "Transport Security",
+            "severity": "LOW",
+            "title": "HTTP connection",
+            "description": "The URL uses HTTP instead of HTTPS.",
+            "evidence": "http://itvedant.com/",
+            "recommendation": "Prefer HTTPS when sensitive information is involved.",
+            "score": 3,
+            "confidence": "HIGH",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "HTTP Redirect",
+            "severity": "LOW",
+            "title": "Redirect chain detected",
+            "description": "The target redirected the request through one or more URLs.",
+            "evidence": "2 redirect(s)",
+            "recommendation": "Review the complete redirect chain and verify the final domain.",
+            "score": 3,
+            "confidence": "HIGH",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "Domain Redirect",
+            "severity": "MEDIUM",
+            "title": "Redirect changed hostname",
+            "description": "The request ended on a different hostname than the original URL.",
+            "evidence": "itvedant.com -> www.itvedant.com",
+            "recommendation": "Verify that the hostname change is expected.",
+            "score": 6,
+            "confidence": "HIGH",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "HTTP Security",
+            "severity": "LOW",
+            "title": "Content-Security-Policy missing",
+            "description": "The response does not provide a Content-Security-Policy header.",
+            "evidence": "CSP header not found",
+            "recommendation": "Consider deploying an appropriate Content-Security-Policy.",
+            "score": 2,
+            "confidence": "HIGH",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "JavaScript Analysis",
+            "severity": "LOW",
+            "title": "Potentially obfuscated or dynamic JavaScript pattern",
+            "description": "The page contains JavaScript patterns that can be used for dynamic execution or browser redirection.",
+            "evidence": "\\bwindow\\.location\\b",
+            "recommendation": "Review the JavaScript source before trusting the page.",
+            "score": 3,
+            "confidence": "LOW",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "HTML Structure",
+            "severity": "LOW",
+            "title": "Multiple hidden HTML elements",
+            "description": "The page contains several hidden elements.",
+            "evidence": "Hidden style matches: 18",
+            "recommendation": "Review hidden content if the page is suspected of deception.",
+            "score": 2,
+            "confidence": "LOW",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "Page Content",
+            "severity": "MEDIUM",
+            "title": "Many security-sensitive words on page",
+            "description": "The page contains numerous words associated with accounts, verification, authentication, payments, or urgency.",
+            "evidence": "admin, alert, bank, banking, credential, credentials, download, important, limited, payment, refund, security, support, unlock, validate",
+            "recommendation": "Verify the organization and page destination before entering information.",
+            "score": 5,
+            "confidence": "LOW",
+            "timestamp": "2026-09-19 15:08:51"
+        },
+        {
+            "category": "Cookie Security",
+            "severity": "MEDIUM",
+            "title": "Potentially sensitive cookie lacks HttpOnly",
+            "description": "A cookie with a session or authentication-like name does not appear to use HttpOnly.",
+            "evidence": "PHPSESSID",
+            "recommendation": "Review whether sensitive cookies should use HttpOnly.",
+            "score": 5,
+            "confidence": "MEDIUM",
+            "timestamp": "2026-09-19 15:08:51"
+        }
+    ],
+    "warnings": [],
+    "errors": [],
+    "info": [
+        "DNS resolved to: 104.26.4.214, 104.26.5.214, 172.67.74.120",
+        "Final destination: https://www.itvedant.com/",
+        "Successful HTTP response: 200.",
+        "Missing security headers: Content-Security-Policy, Permissions-Policy",
+        "Server header: cloudflare",
+        "Page title: Best IT Training Institute in India | Online Courses with AI",
+        "Cookies without an explicit SameSite attribute: PHPSESSID, qr_utm_source"
+    ],
+    "redirect_chain": [
+        {
+            "status_code": 301,
+            "url": "http://itvedant.com/",
+            "location": "https://itvedant.com/"
+        },
+        {
+            "status_code": 302,
+            "url": "https://itvedant.com/",
+            "location": "https://www.itvedant.com/"
+        },
+        {
+            "status_code": 200,
+            "url": "https://www.itvedant.com/",
+            "location": ""
+        }
+    ],
+    "cookies": [
+        {
+            "name": "PHPSESSID",
+            "domain": "www.itvedant.com",
+            "path": "/",
+            "secure": false,
+            "httponly": false,
+            "samesite": ""
+        },
+        {
+            "name": "qr_utm_source",
+            "domain": ".itvedant.com",
+            "path": "/",
+            "secure": false,
+            "httponly": false,
+            "samesite": ""
+        }
+    ],
+    "metrics": {
+        "url_length": 20,
+        "hostname_length": 12,
+        "path_length": 1,
+        "query_length": 0,
+        "subdomain_count": 0,
+        "domain_labels": 2,
+        "hostname_digit_count": 0,
+        "tld": "com",
+        "normalized_hostname": "itvedant.com",
+        "brand_mentions": [],
+        "suspicious_keywords": {},
+        "keyword_score": 0,
+        "hostname_entropy": 3.4183,
+        "path_entropy": 0.0,
+        "query_entropy": 0.0,
+        "parameter_count": 0,
+        "decoded_path": "/",
+        "path_segments": 0,
+        "percent_encoded_count": 0,
+        "special_character_counts": {
+            "@": 0,
+            "-": 0,
+            "_": 0,
+            ".": 1,
+            "%": 0,
+            "=": 0,
+            "&": 0,
+            "?": 0
+        },
+        "dns_addresses": [
+            "104.26.4.214",
+            "104.26.5.214",
+            "172.67.74.120"
+        ],
+        "dns_resolution_ms": 15.82,
+        "http_status": 200,
+        "response_time_ms": 319.97,
+        "final_url": "https://www.itvedant.com/",
+        "content_type": "text/html; charset=utf-8",
+        "server": "cloudflare",
+        "x_powered_by": "",
+        "redirect_count": 2,
+        "security_headers_present": [
+            "Strict-Transport-Security",
+            "X-Content-Type-Options",
+            "X-Frame-Options",
+            "Referrer-Policy"
+        ],
+        "security_headers_missing": [
+            "Content-Security-Policy",
+            "Permissions-Policy"
+        ],
+        "downloaded_bytes": 408997,
+        "content_truncated": false,
+        "html_length": 408929,
+        "page_title": "Best IT Training Institute in India | Online Courses with AI",
+        "form_count": 8,
+        "password_forms": [],
+        "external_form_actions": [],
+        "iframe_count": 0,
+        "external_iframes": [],
+        "meta_refresh_count": 0,
+        "script_count": 16,
+        "external_scripts": [
+            "https://www.googletagmanager.com/gtag/js?id=G-YVPTR9RBL7",
+            "https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495"
+        ],
+        "suspicious_javascript_patterns": [
+            "\\bwindow\\.location\\b"
+        ],
+        "hidden_style_matches": 18,
+        "visible_text_length": 32506,
+        "page_suspicious_keywords": {
+            "validate": 3,
+            "credential": 4,
+            "credentials": 4,
+            "security": 2,
+            "unlock": 3,
+            "payment": 3,
+            "refund": 3,
+            "bank": 3,
+            "banking": 3,
+            "support": 2,
+            "admin": 2,
+            "important": 2,
+            "alert": 3,
+            "limited": 2,
+            "download": 2
+        },
+        "cookie_count": 2,
+        "risk_score": 29,
+        "risk_level": "LOW",
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 3,
+        "low_findings": 5,
+        "info_findings": 0,
+        "total_findings": 8,
+        "total_warnings": 0,
+        "total_errors": 0
+    },
+    "analysis_started": "2026-09-19T15:08:51.015353",
+    "analysis_finished": "2026-09-19T15:08:51.383275",
+    "fetch_content": true,
+    "verify_tls": true,
+    "timeout": 10
+}

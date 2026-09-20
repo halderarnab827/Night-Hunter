@@ -1,0 +1,6 @@
+# NIGHT HUNTER - Core Configuration
+
+TOOL_NAME = "NIGHT HUNTER"
+VERSION = "1.0.0"
+
+DEFAULT_TIMEOUT = 20
