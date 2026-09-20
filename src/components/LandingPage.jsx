@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -22,19 +23,23 @@ const downloads = [
 ];
 
 export default function LandingPage() {
+  useEffect(() => {
+    document.title = "Night Hunter - Defensive Security Platform | Nighthunter";
+  }, []);
+
   return (
     <div className="landing-root">
       <header className="landing-nav">
         <a className="landing-brand" href="#top" aria-label="Night Hunter home">
-          <img src="/night-hunter-logo.jpeg" alt="" />
+          <img src="/night-hunter-logo.jpeg" alt="Night Hunter Logo" />
           <span>NIGHT <b>HUNTER</b></span>
         </a>
         <nav>
           <a href="#features">Platform</a>
           <a href="#downloads">Downloads</a>
-          <a href="#how-it-works">Install</a>
+          <a href="#how-it-works">How to Use</a>
         </nav>
-        <a className="nav-app-link" href="/app">Launch dashboard <ArrowUpRight size={15} /></a>
+        <a className="nav-app-link" href="#downloads">Download <Download size={15} /></a>
       </header>
 
       <main id="top">
@@ -45,10 +50,10 @@ export default function LandingPage() {
           <div className="hero-copy">
             <p className="landing-eyebrow"><span /> DEFENSIVE SECURITY PLATFORM</p>
             <h1>See the threat.<br /><em>Own the response.</em></h1>
-            <p className="hero-description">A focused security workspace for authorized analysis, from your browser to your command line.</p>
+            <p className="hero-description">A focused security workspace for authorized analysis, penetration testing, and defensive auditing across your devices.</p>
             <div className="hero-actions">
-              <a className="hero-primary" href="#downloads">Get Night Hunter <Download size={18} /></a>
-              <a className="hero-secondary" href="/app">Explore dashboard <ArrowUpRight size={17} /></a>
+              <a className="hero-primary" href="#downloads">Download Night Hunter <Download size={18} /></a>
+              <a className="hero-secondary" href="#how-it-works">How to Use <ChevronDown size={17} /></a>
             </div>
             <div className="hero-proof">
               <span><Check size={14} /> Windows, Linux & Android</span>
@@ -57,7 +62,7 @@ export default function LandingPage() {
           </div>
           <div className="hero-mark" aria-hidden="true">
             <div className="mark-scan" />
-            <img src="/night-hunter-logo.jpeg" alt="" />
+            <img src="/night-hunter-logo.jpeg" alt="Night Hunter Logo" />
             <div className="mark-caption">NIGHT HUNTER <span>01 / DEFENSIVE OPS</span></div>
           </div>
           <p className="hero-scroll">SCROLL TO EXPLORE <ChevronDown size={15} /></p>
@@ -90,19 +95,42 @@ export default function LandingPage() {
         </section>
 
         <section className="install-section" id="how-it-works">
-          <div><p className="landing-eyebrow"><span /> SIMPLE BY DESIGN</p><h2>From download<br />to defense.</h2></div>
+          <div><p className="landing-eyebrow"><span /> COMPLETE SETUP GUIDE</p><h2>How to download<br />& run.</h2></div>
           <ol>
-            <li><b>01</b><span><strong>Choose your platform</strong><small>Download the release that matches your device.</small></span></li>
-            <li><b>02</b><span><strong>Install once</strong><small>Windows opens the dashboard; Linux and Termux install the NightHunter command.</small></span></li>
-            <li><b>03</b><span><strong>Analyze responsibly</strong><small>Use Night Hunter only on systems and networks you own or are authorized to assess.</small></span></li>
+            <li>
+              <b>WINDOWS</b>
+              <span>
+                <strong>1. Download NightHunter.exe</strong>
+                <small>Click "Download for Windows". Double-click <code>NightHunter.exe</code> to run. (If SmartScreen warns, click <em>More info</em> &rarr; <em>Run anyway</em>).</small>
+                <small style={{ color: '#dd9dff', marginTop: '4px' }}>&#10003; Automatically opens dashboard in your browser at <code>http://127.0.0.1:5000</code>.</small>
+              </span>
+            </li>
+            <li>
+              <b>LINUX</b>
+              <span>
+                <strong>2. Extract & Install Terminal Edition</strong>
+                <small>Extract archive: <code>tar -xzf night-hunter-linux.tar.gz</code></small>
+                <small>Install: <code>cd night-hunter-linux &amp;&amp; bash install.sh</code></small>
+                <small style={{ color: '#dd9dff', marginTop: '4px' }}>&#10003; Start anytime from any terminal: <code>NightHunter</code></small>
+              </span>
+            </li>
+            <li>
+              <b>TERMUX</b>
+              <span>
+                <strong>3. Run on Android Phone via Termux</strong>
+                <small>Extract zip: <code>unzip night-hunter-termux.zip</code></small>
+                <small>Install: <code>cd night-hunter-termux &amp;&amp; bash termux-install.sh</code></small>
+                <small style={{ color: '#dd9dff', marginTop: '4px' }}>&#10003; Start anytime inside Termux: <code>NightHunter</code></small>
+              </span>
+            </li>
           </ol>
         </section>
       </main>
 
       <footer className="landing-footer">
-        <div className="landing-brand"><img src="/night-hunter-logo.jpeg" alt="" /><span>NIGHT <b>HUNTER</b></span></div>
+        <div className="landing-brand"><img src="/night-hunter-logo.jpeg" alt="Night Hunter Logo" /><span>NIGHT <b>HUNTER</b></span></div>
         <p>Defensive tooling for authorized security testing.</p>
-        <a href="/app">Launch dashboard <ArrowUpRight size={15} /></a>
+        <a href="#downloads">Download Night Hunter <Download size={15} /></a>
       </footer>
     </div>
   );
