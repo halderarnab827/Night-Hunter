@@ -1,29 +1,16 @@
-# Night Hunter
+# React + Vite
 
-Night Hunter is a local security-learning dashboard with a Flask API and a React frontend.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## Windows web application
+Currently, two official plugins are available:
 
-Install Python 3.10+ and Node.js 20+ first. Then double-click:
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-```text
-setup_windows.bat
-```
+## React Compiler
 
-When setup finishes, double-click:
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Expanding the Oxlint configuration
 
-```text
-start_night_hunter.bat
-```
-
-Night Hunter will open at `http://127.0.0.1:5000`. Close the **Night Hunter Server** terminal to stop it.
-
-## Included screens
-
-- Web Security, Password Security, and Network Security call the Flask API.
-- Phishing Analyzer evaluates URL characteristics without fetching the remote page.
-- Cryptography provides text hashing and encoding/decoding utilities.
-- Activity History automatically saves completed dashboard actions and their result on this computer.
-
-Only assess systems and URLs you own or are explicitly authorized to test.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
