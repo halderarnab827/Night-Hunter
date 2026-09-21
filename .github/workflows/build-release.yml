@@ -60,6 +60,10 @@ jobs:
             releases/night-hunter-termux.zip
 
   release:
+    # Direct downloads are served by the verified Render release endpoint.
+    # GitHub Release publishing is optional because it requires a repository
+    # setting that grants Actions write access to repository contents.
+    if: vars.PUBLISH_GITHUB_RELEASES == 'true'
     needs: [windows, linux-and-termux]
     runs-on: ubuntu-latest
     steps:
