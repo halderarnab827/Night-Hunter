@@ -95,32 +95,54 @@ export default function LandingPage() {
         </section>
 
         <section className="install-section" id="how-it-works">
-          <div><p className="landing-eyebrow"><span /> COMPLETE SETUP GUIDE</p><h2>How to download<br />& run.</h2></div>
+          <div>
+            <p className="landing-eyebrow"><span /> COMPLETE USER GUIDELINE</p>
+            <h2>Installation &amp;<br />Troubleshooting</h2>
+            <div style={{ marginTop: '20px', padding: '16px', borderRadius: '6px', background: 'rgba(154, 85, 255, 0.1)', border: '1px solid rgba(154, 85, 255, 0.3)', color: '#d5c6e6', fontSize: '13px', lineHeight: '1.6' }}>
+              <strong style={{ color: '#fff', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                <ShieldCheck size={16} color="#4ade80" /> 100% Safe &amp; Open Source
+              </strong>
+              Night Hunter runs entirely locally on your machine with no hidden telemetry or external tracking. All source code is publicly auditable on GitHub.
+            </div>
+          </div>
           <ol>
             <li>
               <b>WINDOWS</b>
               <span>
-                <strong>1. Download NightHunter.exe</strong>
-                <small>Click "Download for Windows". Double-click <code>NightHunter.exe</code> to run. (If SmartScreen warns, click <em>More info</em> &rarr; <em>Run anyway</em>).</small>
-                <small style={{ color: '#dd9dff', marginTop: '4px' }}>&#10003; Automatically opens dashboard in your browser at <code>http://127.0.0.1:5000</code>.</small>
+                <strong>Windows 10 / 11 Setup &amp; Safety Verification</strong>
+                <small>1. Click <b>"Download for Windows"</b> to get <code>NightHunter.exe</code>.</small>
+                <small>2. Double-click the file to open.</small>
+                <small style={{ marginTop: '6px', background: 'rgba(255,255,255,0.06)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #f24fcf' }}>
+                  <b style={{ color: '#fff' }}>Windows SmartScreen Note:</b> Because Night Hunter is an open-source project without a costly enterprise signing certificate, Windows Defender may show <em>"Windows protected your PC"</em>.
+                  <br />&rarr; Click <b>"More info"</b> and then <b>"Run anyway"</b>.
+                </small>
+                <small style={{ color: '#dd9dff', marginTop: '6px' }}>&#10003; The local engine starts and automatically opens your dashboard at <code>http://127.0.0.1:5000</code>.</small>
               </span>
             </li>
             <li>
               <b>LINUX</b>
               <span>
-                <strong>2. Extract & Install Terminal Edition</strong>
-                <small>Extract archive: <code>tar -xzf night-hunter-linux.tar.gz</code></small>
-                <small>Install: <code>cd night-hunter-linux &amp;&amp; bash install.sh</code></small>
-                <small style={{ color: '#dd9dff', marginTop: '4px' }}>&#10003; Start anytime from any terminal: <code>NightHunter</code></small>
+                <strong>Linux (Ubuntu, Kali, Debian, Arch, Mint)</strong>
+                <small>1. Download <code>night-hunter-linux.tar.gz</code>.</small>
+                <small>2. Open terminal and extract: <code>tar -xzf night-hunter-linux.tar.gz &amp;&amp; cd night-hunter-linux</code></small>
+                <small>3. Run installer: <code>bash install.sh</code></small>
+                <small>4. Launch anytime from terminal: <code>NightHunter</code> (or <code>nighthunter</code>)</small>
+                <small style={{ marginTop: '6px', background: 'rgba(255,255,255,0.06)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #dd9dff' }}>
+                  <b style={{ color: '#fff' }}>If terminal says "command not found":</b>
+                  <br />Run this one command to link it globally:
+                  <br /><code style={{ color: '#4ade80' }}>sudo ln -sf ~/.local/bin/NightHunter /usr/local/bin/NightHunter</code>
+                  <br />Or run directly: <code>~/.local/bin/NightHunter</code>
+                </small>
               </span>
             </li>
             <li>
               <b>TERMUX</b>
               <span>
-                <strong>3. Run on Android Phone via Termux</strong>
-                <small>Extract zip: <code>unzip night-hunter-termux.zip</code></small>
-                <small>Install: <code>cd night-hunter-termux &amp;&amp; bash termux-install.sh</code></small>
-                <small style={{ color: '#dd9dff', marginTop: '4px' }}>&#10003; Start anytime inside Termux: <code>NightHunter</code></small>
+                <strong>Android Setup via Termux</strong>
+                <small>1. Download <code>night-hunter-termux.zip</code> on your Android device.</small>
+                <small>2. In Termux, navigate to downloads: <code>cd ~/storage/downloads &amp;&amp; unzip night-hunter-termux.zip</code></small>
+                <small>3. Run installer: <code>cd night-hunter-termux &amp;&amp; bash termux-install.sh</code></small>
+                <small>4. Start anytime by typing: <code>NightHunter</code></small>
               </span>
             </li>
           </ol>

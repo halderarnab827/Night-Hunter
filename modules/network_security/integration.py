@@ -182,30 +182,71 @@ def show_network_information():
 
     print()
     print("=" * 64)
-    print("NETWORK INFORMATION")
+    print("NIGHT HUNTER - NETWORK DEVICE INFORMATION & RECON")
     print("=" * 64)
+    print()
+    print("[!] CAUTION: For local device name, MAC address, and OS model detection,")
+    print("    the target device should be connected to the SAME local network (LAN / Wi-Fi).")
+    print()
+
+    target = input("Enter target device IP address (e.g., 192.168.1.15) [default: 127.0.0.1]: ").strip()
+    if not target:
+        target = "127.0.0.1"
+
+    print(f"\n[*] Scanning target device {target} (Nmap recon + OS & TCP/UDP port scan)...")
 
     try:
-
-        if hasattr(checker, "get_network_info"):
-
-            information = checker.get_network_info()
-
+        if hasattr(checker, "get_device_recon"):
+            info = checker.get_device_recon(target)
+        elif hasattr(checker, "get_network_info"):
+            info = checker.get_network_info(target)
         else:
-
-            print("[!] Network information function not found.")
+            print("[!] Device recon function not found.")
             return
 
-        if not information:
-            print("[!] No network information returned.")
+        if not info:
+            print("[!] No information returned for target.")
             return
 
-        for key, value in information.items():
-            print(f"{key}: {value}")
+        print()
+        print("=" * 64)
+        print("TARGET DEVICE INTELLIGENCE")
+        print("=" * 64)
+        print(f"Target IP       : {info.get('ip_address', target)}")
+        print(f"Device Name     : {info.get('device_name', 'Unknown')}")
+        print(f"OS Model        : {info.get('os_model', 'Unknown OS')}")
+        print(f"Device Type     : {info.get('device_type', 'general purpose')}")
+        if info.get('mac_address'):
+            vendor_str = f" ({info.get('mac_vendor')})" if info.get('mac_vendor') else ""
+            print(f"MAC Address     : {info.get('mac_address')}{vendor_str}")
+        print(f"Scan Engine     : {info.get('scan_engine', 'Nmap')}")
+        print(f"Scan Timestamp  : {info.get('timestamp')}")
+        print("=" * 64)
+
+        tcp_ports = info.get('tcp_ports', [])
+        print(f"\n[+] OPEN TCP PORTS ({len(tcp_ports)} found):")
+        if tcp_ports:
+            print(f"    {'PORT':<8} {'SERVICE':<18} {'STATE':<10}")
+            print("    " + "-" * 38)
+            for p in tcp_ports:
+                print(f"    {p.get('port', ''):<8} {p.get('service', 'unknown'):<18} {p.get('state', 'OPEN'):<10}")
+        else:
+            print("    No open TCP ports found.")
+
+        udp_ports = info.get('udp_ports', [])
+        print(f"\n[+] OPEN UDP PORTS - Nmap -sU ({len(udp_ports)} found):")
+        if udp_ports:
+            print(f"    {'PORT':<8} {'SERVICE':<18} {'STATE':<14}")
+            print("    " + "-" * 42)
+            for p in udp_ports:
+                print(f"    {p.get('port', ''):<8} {p.get('service', 'unknown'):<18} {p.get('state', 'OPEN'):<14}")
+        else:
+            print("    No open UDP ports found.")
+        print("=" * 64)
 
     except Exception as error:
         print()
-        print(f"[!] Unable to collect network information: {error}")
+        print(f"[!] Unable to collect device information: {error}")
 
 
 # ---------------------------------------------------------

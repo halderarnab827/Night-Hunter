@@ -32,6 +32,13 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from core.logger import log_info, log_warning, log_error
+from modules.network_security.device_scanner import (
+    get_device_recon,
+    scan_target_nmap,
+    scan_target_native,
+    COMMON_UDP_PORTS,
+    LAN_CAUTION,
+)
 
 
 
@@ -146,7 +153,15 @@ def get_service_name(port):
 # LOCAL NETWORK INFORMATION
 # ============================================================
 
-def get_network_info():
+def get_network_info(target=None):
+    """
+    Collect device recon and network information for a target host/IP.
+    If target is specified, performs Nmap-style targeted intelligence
+    (device name, OS model, MAC address, open TCP and UDP ports).
+    """
+    if target:
+        return get_device_recon(target)
+
     """
     Collect basic information about the local machine/network.
 
@@ -753,9 +768,18 @@ def get_network_summary(host):
     """
 
     host = clean_host(host)
+    recon = get_device_recon(host) if host else {}
 
     summary = {
         "target": host,
+        "device_name": recon.get("device_name", "Unknown"),
+        "os_model": recon.get("os_model", "Unknown OS"),
+        "device_type": recon.get("device_type", "general purpose"),
+        "mac_address": recon.get("mac_address"),
+        "mac_vendor": recon.get("mac_vendor", ""),
+        "udp_ports": recon.get("udp_ports", []),
+        "caution": recon.get("caution", LAN_CAUTION),
+        "scan_engine": recon.get("scan_engine", "Nmap Engine"),
         "timestamp": get_timestamp(),
         "resolution": None,
         "host_check": None,
@@ -810,9 +834,16 @@ def get_network_summary(host):
                 for future in futures
             ]
 
-    summary["total_open_ports"] = len(
-        summary["open_ports"]
-    )
+    recon = get_device_recon(host)
+    summary["device_name"] = recon.get("device_name", "Unknown")
+    summary["os_model"] = recon.get("os_model", "Unknown OS")
+    summary["device_type"] = recon.get("device_type", "general purpose")
+    summary["mac_address"] = recon.get("mac_address")
+    summary["mac_vendor"] = recon.get("mac_vendor", "")
+    summary["udp_ports"] = recon.get("udp_ports", [])
+    summary["caution"] = recon.get("caution", LAN_CAUTION)
+    summary["scan_engine"] = recon.get("scan_engine", "Nmap Engine")
+    summary["total_open_ports"] = len(summary["open_ports"]) + len(summary["udp_ports"])
 
     return summary
 
@@ -948,6 +979,11 @@ def iter_network_check(host, timeout=DEFAULT_TIMEOUT):
         "type": "host_check",
         "host_check": host_check
     }
+    recon = get_device_recon(host)
+    yield {
+        "type": "device_info",
+        "device": recon
+    }
 
     scan_results = []
     with ThreadPoolExecutor(
@@ -1022,6 +1058,14 @@ def iter_network_check(host, timeout=DEFAULT_TIMEOUT):
 
     summary = {
         "target": host,
+        "device_name": recon.get("device_name", "Unknown"),
+        "os_model": recon.get("os_model", "Unknown OS"),
+        "device_type": recon.get("device_type", "general purpose"),
+        "mac_address": recon.get("mac_address"),
+        "mac_vendor": recon.get("mac_vendor", ""),
+        "udp_ports": recon.get("udp_ports", []),
+        "caution": recon.get("caution", LAN_CAUTION),
+        "scan_engine": recon.get("scan_engine", "Nmap Engine"),
         "timestamp": get_timestamp(),
         "resolution": resolution,
         "host_check": host_check,

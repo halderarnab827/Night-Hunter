@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
+FRONTEND_DIST = PROJECT_ROOT / "dist" if (PROJECT_ROOT / "dist").is_dir() else (PROJECT_ROOT / "frontend" / "dist")
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
