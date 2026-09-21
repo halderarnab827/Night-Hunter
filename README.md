@@ -176,10 +176,11 @@ This software, **Night Hunter**, is designed, developed, and distributed solely 
 
 1. **Authorized Usage Only**: You must only use Night Hunter on networks, hosts, devices, and websites that you own or where you have received **explicit, prior written permission** from the system owner or network administrator.
 2. **Prohibited Activities**: Scanning, auditing, stress-testing, or reconnaissance conducted against third-party systems without prior authorization is illegal and violates computer crime laws, including the **United States Computer Fraud and Abuse Act (CFAA)**, the **UK Computer Misuse Act**, the **Indian Information Technology Act (IT Act 2000)**, and equivalent international cybersecurity legislation.
-3. **Limitation of Liability & Developer Indemnification**: 
-   - **Under no circumstances shall the author, developers, contributors, or copyright holders be held responsible or legally liable for any damages, losses, legal actions, network disruptions, data corruption, or legal claims resulting from the misuse, abuse, or unauthorized deployment of this software.**
-   - The end user accepts full and sole responsibility for compliance with all applicable local, national, and international laws and regulations.
-4. **No Warranty**: This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+3. **Limitation of Liability & Author Indemnification**: 
+   - **Under no circumstances shall the author and developer, Arnab Halder, or any project contributors, be held liable, issued legal notices, or held responsible for any direct, indirect, incidental, punitive, or consequential damages, legal repercussions, financial losses, system downtime, or criminal charges arising from the use, misuse, abuse, or deployment of this software.**
+   - **The author, Arnab Halder, does not condone, promote, or support malicious hacking, unauthorized intrusion, or cyber attacks of any kind.**
+   - **The end user assumes 100% full legal, civil, and criminal responsibility for their own actions and operations conducted using this software.**
+4. **"AS-IS" Warranty Disclaimer**: This software is provided strictly on an "AS IS" and "AS AVAILABLE" basis, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
 
 ---
 
