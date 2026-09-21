@@ -1,16 +1,29 @@
-# React + Vite
+# Night Hunter
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Night Hunter is an open-source defensive security workspace for authorized testing. It provides local Nmap profiles, web-security inspection, phishing-link analysis, password checks, cryptography utilities, and report export.
 
-Currently, two official plugins are available:
+## Downloads
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Download only from the official website: https://night-hunter-f2w4.onrender.com/#downloads
 
-## React Compiler
+Before running a download, verify its SHA-256 value against [SHA256SUMS](SHA256SUMS). The Windows application opens a local dashboard at `http://127.0.0.1:5000`; local Nmap profiles require Nmap to be installed on the device.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Responsible use
 
-## Expanding the Oxlint configuration
+Use Night Hunter only on systems, networks, and URLs you own or are explicitly authorized to assess. Do not use it to access, disrupt, or collect data from systems without permission.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Trust and policy
+
+- [License](LICENSE)
+- [Privacy policy](PRIVACY.md)
+- [Security policy](SECURITY.md)
+- [Distribution notes](DISTRIBUTION.md)
+
+## Development
+
+```bash
+npm ci
+npm run build
+```
+
+The hosted service is deployed from `main`. Release packages are built by GitHub Actions; direct packages are served through the official website.
