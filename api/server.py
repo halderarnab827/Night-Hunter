@@ -7,7 +7,10 @@ from flask_cors import CORS
 
 
 PROJECT_ROOT = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[1]
-FRONTEND_DIST = PROJECT_ROOT / "dist" if (PROJECT_ROOT / "dist").is_dir() else (PROJECT_ROOT / "frontend" / "dist")
+# Docker always builds the current frontend into ``frontend/dist``.  Prefer it
+# over the repository's checked-in ``dist`` directory, which can be from an
+# older release and otherwise makes a successful deployment serve stale UI.
+FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist" if (PROJECT_ROOT / "frontend" / "dist").is_dir() else (PROJECT_ROOT / "dist")
 RELEASES_DIR = PROJECT_ROOT / "releases"
 
 if str(PROJECT_ROOT) not in sys.path:
