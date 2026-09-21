@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, CheckCircle2, Cpu, Network, Radar, RefreshCw, Server, ShieldCheck, Terminal } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Cpu, Download, Network, Radar, RefreshCw, Server, ShieldCheck, Terminal } from "lucide-react";
 
 export default function NmapWorkspace() {
   const [status, setStatus] = useState(null);
@@ -36,6 +36,7 @@ export default function NmapWorkspace() {
   return <section className="nmap-workspace">
     <header className="module-header network-module-header"><div className="module-heading"><div className="module-heading-icon"><Radar size={24} /></div><div><p className="eyebrow">NIGHT HUNTER · LOCAL NMAP</p><h2>Verified Nmap Workspace</h2><p className="subtitle">Named profiles · XML evidence · no simulated findings</p></div></div><div className={`module-state ${running ? "busy" : status?.available ? "success" : ""}`}><span />{running ? "SCANNING" : status?.available ? "NMAP READY" : "NMAP UNAVAILABLE"}</div></header>
 
+    {!status?.available && status?.runtime === "cloud" && <section className="local-access-notice"><div className="local-access-icon"><Download size={22} /></div><div><span>COMPLETE LOCAL ACCESS</span><h3>Download Night Hunter for verified Nmap output</h3><p>The cloud edition intentionally does not run LAN-level Nmap scans. For full TCP/UDP profiles, OS fingerprint attempts, MAC/vendor discovery, and the complete local evidence report, use the Windows, Linux, or Termux edition on your own device.</p><div className="local-access-links"><a href="/downloads/night-hunter-windows.zip">Windows</a><a href="/downloads/night-hunter-linux.tar.gz">Linux</a><a href="/downloads/night-hunter-termux.zip">Termux</a></div></div></section>}
     <div className="network-caution-banner"><div className="caution-icon-box"><AlertTriangle size={18} /></div><div><strong>LOCAL ONLY:</strong> Full Nmap profiles run only on the Windows, Linux, or Termux installation. The hosted cloud app cannot scan from your LAN or provide reliable OS/MAC results. Use only with targets you own or are authorized to assess.</div></div>
 
     <form className="nmap-form" onSubmit={scan}>
