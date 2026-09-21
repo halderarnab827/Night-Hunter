@@ -163,6 +163,9 @@ export default function AdvancedNetworkSecurity() {
   const udpPorts = result?.udp_ports || [];
   const services = result?.open_services || [];
   const banners = result?.service_banners || [];
+  const capabilities = result?.capabilities || {};
+  const osCapability = capabilities.os_fingerprint || {};
+  const udpCapability = capabilities.udp_scan || {};
   const hostStatus = result?.host_check?.reachable
     ? "REACHABLE"
     : result
@@ -178,8 +181,8 @@ export default function AdvancedNetworkSecurity() {
           </div>
           <div>
             <p className="eyebrow">NIGHT HUNTER · NETWORK SECURITY</p>
-            <h2>Target Device Intelligence & Nmap Recon</h2>
-            <p className="subtitle">Discover · Fingerprint OS · Scan TCP & UDP</p>
+            <h2>Authorized Network Inspection</h2>
+            <p className="subtitle">Resolve · Inspect TCP services · Report evidence</p>
           </div>
         </div>
         <div className={`module-state ${scanning ? "busy" : status === "COMPLETE" ? "success" : ""}`}>
@@ -194,8 +197,7 @@ export default function AdvancedNetworkSecurity() {
           <AlertTriangle size={18} />
         </div>
         <div>
-          <strong>CAUTION:</strong> For local device name, MAC address, and OS model detection,
-          the target device should be connected to the <u>SAME local network (LAN / Wi-Fi)</u>.
+          <strong>ACCURACY NOTE:</strong> MAC addresses and reliable OS fingerprints are available only from a local scan on the <u>SAME LAN / Wi-Fi</u>. Cloud scans report only the checks that actually ran.
         </div>
       </div>
 
@@ -204,7 +206,7 @@ export default function AdvancedNetworkSecurity() {
           <div className="advanced-network-card-heading">
             <div>
               <span>TARGET DEVICE IP / HOST</span>
-              <h3>Nmap Reconnaissance Scan</h3>
+              <h3>Authorized Host Inspection</h3>
             </div>
             <Radar size={20} />
           </div>
@@ -236,7 +238,7 @@ export default function AdvancedNetworkSecurity() {
           )}
           <p className="advanced-network-note">
             <ShieldCheck size={15} />
-            Scans target device IP for OS model, device name, MAC address, and open TCP/UDP ports.
+            Results distinguish measured values, heuristics, and unavailable capabilities. Do not treat an unavailable value as a finding.
           </p>
         </form>
 
@@ -245,21 +247,15 @@ export default function AdvancedNetworkSecurity() {
           <span>NMAP-STYLE ENGINE</span>
           <h3>Target Device Intelligence</h3>
           <ul>
-            <li>
-              <i /> Remote OS Model Fingerprint (-O / Heuristics)
-            </li>
+            <li><i /> Local Nmap OS fingerprint, when installed and permitted</li>
             <li>
               <i /> Device Name (Reverse DNS / NetBIOS / mDNS)
             </li>
-            <li>
-              <i /> Hardware MAC & Vendor Discovery
-            </li>
+            <li><i /> LAN-only MAC & vendor discovery</li>
             <li>
               <i /> Open TCP Ports & Services Scan
             </li>
-            <li>
-              <i /> Open UDP Ports Discovery (Nmap -sU)
-            </li>
+            <li><i /> UDP discovery only when the local scan engine supports it</li>
           </ul>
         </aside>
       </div>
@@ -268,7 +264,7 @@ export default function AdvancedNetworkSecurity() {
         <Metric icon={Server} label="HOST STATUS" value={hostStatus} tone="blue" />
         <Metric
           icon={Cpu}
-          label="OS MODEL"
+          label="OS DETECTION"
           value={result?.os_model ? result.os_model.split("(")[0].trim() : "—"}
           tone="violet"
         />
@@ -280,7 +276,7 @@ export default function AdvancedNetworkSecurity() {
         />
         <Metric
           icon={Radio}
-          label="UDP OPEN (-sU)"
+          label="UDP RESULTS"
           value={result ? udpPorts.length : "—"}
           tone="pink"
         />
@@ -292,7 +288,7 @@ export default function AdvancedNetworkSecurity() {
             <div className="network-live-heading">
               <div>
                 <span>LIVE SCAN PROGRESS</span>
-                <h3>Scanning Target Device & Fingerprinting OS</h3>
+                <h3>Scanning Authorized Host</h3>
               </div>
               <b>
                 {completedPorts} / {totalPorts}
@@ -345,8 +341,7 @@ export default function AdvancedNetworkSecurity() {
               <span>RECON ENGINE READY</span>
               <h3>Enter a Target Device IP to Scan</h3>
               <p>
-                Provide the IP of any device on the same local network (LAN / Wi-Fi) to discover its
-                device name, operating system model, MAC address, and open TCP/UDP ports.
+                Enter a host you are authorized to assess. Local scans may provide additional LAN-only identity details; cloud scans do not claim them.
               </p>
             </div>
           </section>
@@ -375,8 +370,9 @@ export default function AdvancedNetworkSecurity() {
                 <strong>{result.device_name || "Unknown"}</strong>
               </div>
               <div className="recon-detail-cell highlight">
-                <label>OS MODEL & FINGERPRINT</label>
+                <label>OS DETECTION</label>
                 <strong className="os-name-pill">{result.os_model || "Unknown OS"}</strong>
+                {osCapability.reason && <small>{osCapability.reason}</small>}
               </div>
               <div className="recon-detail-cell">
                 <label>DEVICE TYPE</label>
@@ -434,8 +430,8 @@ export default function AdvancedNetworkSecurity() {
             <section className="network-result-card">
               <div className="result-card-heading">
                 <div>
-                  <span>UDP PORT SCAN (NMAP -sU)</span>
-                  <h3>Open UDP Ports ({udpPorts.length})</h3>
+                  <span>{udpCapability.status === "unavailable" ? "UDP PORT SCAN" : "UDP PORT SCAN (LOCAL ENGINE)"}</span>
+                  <h3>{udpCapability.status === "unavailable" ? "Not run" : `UDP responses (${udpPorts.length})`}</h3>
                 </div>
                 <Radio size={19} />
               </div>
@@ -448,14 +444,14 @@ export default function AdvancedNetworkSecurity() {
                         <strong>{port.service}</strong>
                         <span>UDP</span>
                       </div>
-                      <em className="udp-pill">{port.state || "OPEN|FILTERED"}</em>
+                      <em className="udp-pill">{port.state || "INDETERMINATE"}</em>
                     </article>
                   ))}
                 </div>
               ) : (
                 <div className="result-empty">
                   <CheckCircle2 size={21} />
-                  <p>No responding UDP services found on scanned ports.</p>
+                  <p>{udpCapability.reason || "No responding UDP services found on scanned ports."}</p>
                 </div>
               )}
             </section>

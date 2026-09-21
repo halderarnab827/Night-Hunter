@@ -780,6 +780,8 @@ def get_network_summary(host):
         "udp_ports": recon.get("udp_ports", []),
         "caution": recon.get("caution", LAN_CAUTION),
         "scan_engine": recon.get("scan_engine", "Nmap Engine"),
+        "runtime_mode": recon.get("runtime_mode", "local"),
+        "capabilities": recon.get("capabilities", {}),
         "timestamp": get_timestamp(),
         "resolution": None,
         "host_check": None,
@@ -843,7 +845,14 @@ def get_network_summary(host):
     summary["udp_ports"] = recon.get("udp_ports", [])
     summary["caution"] = recon.get("caution", LAN_CAUTION)
     summary["scan_engine"] = recon.get("scan_engine", "Nmap Engine")
-    summary["total_open_ports"] = len(summary["open_ports"]) + len(summary["udp_ports"])
+    summary["runtime_mode"] = recon.get("runtime_mode", "local")
+    summary["capabilities"] = recon.get("capabilities", {})
+    summary["total_open_ports"] = len(summary["open_ports"]) + sum(
+        port.get("state") == "OPEN" for port in summary["udp_ports"]
+    )
+    summary["indeterminate_udp_ports"] = sum(
+        port.get("state") != "OPEN" for port in summary["udp_ports"]
+    )
 
     return summary
 
@@ -1066,6 +1075,8 @@ def iter_network_check(host, timeout=DEFAULT_TIMEOUT):
         "udp_ports": recon.get("udp_ports", []),
         "caution": recon.get("caution", LAN_CAUTION),
         "scan_engine": recon.get("scan_engine", "Nmap Engine"),
+        "runtime_mode": recon.get("runtime_mode", "local"),
+        "capabilities": recon.get("capabilities", {}),
         "timestamp": get_timestamp(),
         "resolution": resolution,
         "host_check": host_check,
@@ -1079,7 +1090,12 @@ def iter_network_check(host, timeout=DEFAULT_TIMEOUT):
             for result in open_ports
         ],
         "service_banners": service_banners,
-        "total_open_ports": len(open_ports),
+        "total_open_ports": len(open_ports) + sum(
+            port.get("state") == "OPEN" for port in recon.get("udp_ports", [])
+        ),
+        "indeterminate_udp_ports": sum(
+            port.get("state") != "OPEN" for port in recon.get("udp_ports", [])
+        ),
         "success": True
     }
 

@@ -4841,7 +4841,7 @@ button {
   color: #fff !important;
 }
 
-/* v1.4 service-selection workflow */
+/* v1.5 service-selection workflow */
 .service-picker-page { max-width: 1180px; margin: 0 auto; padding: 8px 0 32px; }
 .service-back { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 0; color: #c7a7ff; cursor: pointer; font: 600 12px 'JetBrains Mono', monospace; padding: 8px 0; }
 .service-picker-header { display: flex; gap: 17px; align-items: center; margin: 18px 0; }
@@ -4863,5 +4863,6 @@ button {
 .selected-service-banner span { display: block; color: #aa8df8; font: 600 10px 'JetBrains Mono', monospace; letter-spacing: .08em; margin-bottom: 4px; }
 .selected-service-banner strong { color: #fff; font-size: 15px; }
 .selected-service-banner button { margin: 0; white-space: nowrap; }
+.recon-detail-cell small { display: block; margin-top: 6px; color: #9ba7c2; font-size: 10px; font-weight: 500; line-height: 1.35; }
 @media (max-width: 700px) { .service-card-grid { grid-template-columns: 1fr; } .service-picker-header { align-items: flex-start; } .selected-service-banner { align-items: flex-start; flex-direction: column; } }
 

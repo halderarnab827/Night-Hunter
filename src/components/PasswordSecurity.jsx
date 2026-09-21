@@ -446,7 +446,7 @@ function PasswordSecurity() {
             <LockKeyhole size={16} />
 
             <span>
-              Password is sent only to the local NIGHT HUNTER API for analysis.
+              The password is analyzed in memory by the current Night Hunter runtime and is not saved in reports. Do not submit a real password to a shared cloud deployment.
             </span>
 
           </div>

@@ -103,7 +103,7 @@ export default function ServicePicker({ moduleName, onBack, onSelect }) {
       <div className="service-picker-header">
         <div className="service-picker-icon"><CategoryIcon size={28} /></div>
         <div>
-          <p className="eyebrow">NIGHT HUNTER v1.4 · SERVICE SELECTOR</p>
+          <p className="eyebrow">NIGHT HUNTER v1.5 · SERVICE SELECTOR</p>
           <h2>{moduleName}</h2>
           <p className="subtitle">{category.summary}</p>
         </div>
@@ -111,7 +111,7 @@ export default function ServicePicker({ moduleName, onBack, onSelect }) {
 
       <div className="service-picker-note">
         <ShieldCheck size={17} />
-        <span>Select one service to continue. Use only with systems, data and networks you own or are authorized to assess.</span>
+        <span>Select a work area to continue. A workspace reports only checks it actually executes; unavailable checks remain marked unavailable. Use only with systems, data and networks you own or are authorized to assess.</span>
       </div>
 
       <div className="service-card-grid">

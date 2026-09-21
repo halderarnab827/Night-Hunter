@@ -407,7 +407,7 @@ function App() {
           </div>
 
           <div className="version">
-            NIGHT HUNTER <strong>v1.4</strong>
+            NIGHT HUNTER <strong>v1.5</strong>
           </div>
 
         </div>
@@ -423,14 +423,14 @@ function App() {
 
           <div className="stat-card">
             <span>TOOLS</span>
-            <strong>42</strong>
-            <small>Available tools</small>
+            <strong>ON DEMAND</strong>
+            <small>Service workspaces</small>
           </div>
 
           <div className="stat-card">
             <span>FINDINGS</span>
-            <strong>1.2K</strong>
-            <small>Security findings</small>
+            <strong>PER SCAN</strong>
+            <small>Measured findings only</small>
           </div>
 
           <div className="stat-card">
@@ -477,16 +477,16 @@ function App() {
 
               <div>
                 <span className="panel-kicker">
-                  GLOBAL THREAT FEED
+                  SYSTEM READINESS
                 </span>
 
                 <h3>
-                  {t.activity}
+                  Runtime status
                 </h3>
               </div>
 
               <span className="live-badge">
-                LIVE
+                LOCAL
               </span>
 
             </div>
@@ -498,11 +498,11 @@ function App() {
 
               <div>
                 <strong>
-                  Security engine ready
+                  Workspace ready
                 </strong>
 
                 <small>
-                  NIGHT HUNTER core initialized
+                  Choose a service to begin
                 </small>
               </div>
 
@@ -519,11 +519,11 @@ function App() {
 
               <div>
                 <strong>
-                  Report engine online
+                  Evidence-first reporting
                 </strong>
 
                 <small>
-                  JSON · TXT · HTML available
+                  Results are created only after a completed check
                 </small>
               </div>
 
@@ -540,11 +540,11 @@ function App() {
 
               <div>
                 <strong>
-                  Modules detected
+                  Capability-aware results
                 </strong>
 
                 <small>
-                  6 security modules available
+                  Unavailable checks are shown instead of inferred
                 </small>
               </div>
 
@@ -721,25 +721,25 @@ function App() {
                   <div className="notif-card-update">
                     <div className="notif-badge-row">
                       <span className="notif-pill" style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
-                        <Check size={11} /> SYSTEM OPERATIONAL (v1.4)
+                        <Check size={11} /> SYSTEM OPERATIONAL (v1.5)
                       </span>
                       <span className="notif-time-tag">Active</span>
                     </div>
 
-                    <h4>Night Hunter Defensive Engine v1.4</h4>
+                    <h4>Night Hunter Defensive Engine v1.5</h4>
                     <p className="notif-description">
                       {isLocal
                         ? "Running locally with complete device scanning and network hardware access. All security modules are fully operational."
-                        : "Night Hunter v1.4 is running on the live cloud server. Select a focused defensive service before beginning an assessment."}
+                        : "Night Hunter v1.5 is running on the live cloud server. Results identify the scanner runtime and clearly mark unavailable capabilities."}
                     </p>
 
                     <div className="notif-changelog">
                       <p><strong>Active capabilities:</strong></p>
                       <ul>
-                        <li><strong>🎯 Target Nmap Recon:</strong> Scans target IPs on LAN for exact OS model, fingerprint &amp; MAC vendor.</li>
-                        <li><strong>📡 UDP Port Scanner (-sU):</strong> Scans open UDP ports with service mapping.</li>
-                        <li><strong>🛡️ Phishing Engine:</strong> High/Critical threat classification for brand spoofing.</li>
-                        <li><strong>⚠️ LAN Safety Guidelines:</strong> Prominent caution for local network testing.</li>
+                        <li><strong>🎯 Local Nmap Recon:</strong> OS and MAC data are shown only when locally measured.</li>
+                        <li><strong>📡 UDP Inspection:</strong> Unavailable or indeterminate UDP checks are never counted as open services.</li>
+                        <li><strong>🛡️ Passive Link Analysis:</strong> The hosted analyzer assesses URL signals without opening the destination page.</li>
+                        <li><strong>⚠️ Evidence labels:</strong> Measured, heuristic, and unavailable capabilities are clearly separated.</li>
                       </ul>
                     </div>
 
@@ -757,7 +757,7 @@ function App() {
                           href="/landing#downloads"
                           className="notif-btn-download"
                         >
-                          <Download size={13} /> Offline Packages (v1.4)
+                          <Download size={13} /> Offline Packages (v1.5)
                         </a>
                       )}
                     </div>
@@ -881,7 +881,7 @@ function App() {
           </div>
 
           <p>
-            Night Hunter v1.4
+            Night Hunter v1.5
           </p>
 
         </div>

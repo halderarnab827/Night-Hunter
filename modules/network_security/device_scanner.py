@@ -27,6 +27,15 @@ LAN_CAUTION = (
     "the target device should be connected to the SAME local network (LAN / Wi-Fi)."
 )
 
+
+def is_cloud_runtime():
+    """Cloud hosts cannot truthfully provide LAN-only identity details."""
+    return os.environ.get("NIGHT_HUNTER_RUNTIME", "").lower() == "cloud"
+
+
+def unavailable_capability(reason):
+    return {"status": "unavailable", "reason": reason}
+
 TARGET_TCP_PORTS = [
     21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445,
     993, 995, 1433, 1521, 2049, 3306, 3389, 5432, 5900, 6379, 8080, 8443
@@ -252,6 +261,8 @@ def scan_target_nmap(target, scan_udp=True, detect_os=True, timeout=20):
 
         # OS Model & Device Type
         os_model = "Unknown OS"
+        os_detection_status = "inconclusive"
+        os_detection_reason = "Nmap did not have enough response data to identify the OS."
         device_type = "general purpose"
         os_elem = host_elem.find("os")
         if os_elem is not None:
@@ -260,6 +271,8 @@ def scan_target_nmap(target, scan_udp=True, detect_os=True, timeout=20):
                 os_name = osmatch.get("name")
                 acc = osmatch.get("accuracy")
                 os_model = f"{os_name} ({acc}%)" if acc else os_name
+                os_detection_status = "measured"
+                os_detection_reason = "Nmap OS fingerprint result."
                 osclass = osmatch.find("osclass")
                 if osclass is not None:
                     device_type = osclass.get("type", device_type)
@@ -301,8 +314,12 @@ def scan_target_nmap(target, scan_udp=True, detect_os=True, timeout=20):
             open_pids = {p["port"] for p in tcp_ports}
             if 135 in open_pids or 445 in open_pids or 3389 in open_pids:
                 os_model = "Microsoft Windows"
+                os_detection_status = "heuristic"
+                os_detection_reason = "Inferred from exposed SMB/RDP services; this is not an OS fingerprint."
             elif 22 in open_pids:
                 os_model = "Linux / Unix (OpenSSH active)"
+                os_detection_status = "heuristic"
+                os_detection_reason = "Inferred from an SSH service; this is not an OS fingerprint."
 
         return {
             "target": target,
@@ -315,8 +332,15 @@ def scan_target_nmap(target, scan_udp=True, detect_os=True, timeout=20):
             "caution": LAN_CAUTION,
             "tcp_ports": tcp_ports,
             "udp_ports": udp_ports,
-            "total_open_ports": len(tcp_ports) + len(udp_ports),
+            "total_open_ports": len(tcp_ports) + sum(port["state"] == "OPEN" for port in udp_ports),
+            "indeterminate_udp_ports": sum(port["state"] != "OPEN" for port in udp_ports),
             "scan_engine": "Nmap " + (root.get("version") or "Engine"),
+            "runtime_mode": "local",
+            "capabilities": {
+                "os_fingerprint": {"status": os_detection_status, "reason": os_detection_reason},
+                "mac_address": {"status": "measured" if mac_address else "unavailable", "reason": "MAC addresses are available only for directly reachable LAN hosts." if not mac_address else "Observed during local scan."},
+                "udp_scan": {"status": "available", "reason": "UDP services that do not reply may be reported as open|filtered."},
+            },
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "success": True
         }
@@ -389,7 +413,7 @@ def ping_and_get_ttl(ip):
     return False, None
 
 
-def scan_target_native(target, scan_udp=True, detect_os=True):
+def scan_target_native(target, scan_udp=True, detect_os=True, runtime_mode="local"):
     """
     Native Python scanner for device recon when Nmap is not installed.
     Gathers reverse DNS device name, ping TTL, OS fingerprint, MAC address,
@@ -421,11 +445,14 @@ def scan_target_native(target, scan_udp=True, detect_os=True):
     except Exception:
         pass
 
-    # Ping & TTL check
-    reachable, ttl = ping_and_get_ttl(ip_address)
+    # TTL and ARP data are meaningful only when the scanner runs locally.
+    # Cloud providers and routed public IPs commonly suppress or rewrite them.
+    reachable, ttl = (False, None)
+    if runtime_mode == "local":
+        reachable, ttl = ping_and_get_ttl(ip_address)
 
     # MAC Address & Vendor
-    mac_address = get_mac_from_arp(ip_address)
+    mac_address = get_mac_from_arp(ip_address) if runtime_mode == "local" else None
     mac_vendor = lookup_mac_vendor(mac_address) if mac_address else ""
 
     # TCP Port Scan
@@ -454,7 +481,9 @@ def scan_target_native(target, scan_udp=True, detect_os=True):
     os_model = "Unknown OS"
     device_type = "general purpose"
 
-    if 135 in open_tcp_ids or 445 in open_tcp_ids or 3389 in open_tcp_ids:
+    if not detect_os:
+        os_model = "Unavailable from cloud runtime"
+    elif 135 in open_tcp_ids or 445 in open_tcp_ids or 3389 in open_tcp_ids:
         os_model = "Microsoft Windows (SMB/RDP active)"
     elif 22 in open_tcp_ids:
         try:
@@ -491,8 +520,15 @@ def scan_target_native(target, scan_udp=True, detect_os=True):
         "caution": LAN_CAUTION,
         "tcp_ports": tcp_ports,
         "udp_ports": udp_ports,
-        "total_open_ports": len(tcp_ports) + len(udp_ports),
-        "scan_engine": "Native Python Scanner (Fallback)",
+            "total_open_ports": len(tcp_ports) + sum(port["state"] == "OPEN" for port in udp_ports),
+            "indeterminate_udp_ports": sum(port["state"] != "OPEN" for port in udp_ports),
+        "scan_engine": "Remote TCP service check" if runtime_mode == "cloud" else "Native Python Scanner (heuristic fallback)",
+        "runtime_mode": runtime_mode,
+        "capabilities": {
+            "os_fingerprint": unavailable_capability("Cloud hosts cannot perform reliable OS fingerprinting.") if runtime_mode == "cloud" else {"status": "heuristic", "reason": "Nmap was not available; any OS label is a heuristic."},
+            "mac_address": unavailable_capability("MAC addresses are available only for directly reachable LAN hosts.") if runtime_mode == "cloud" else {"status": "lan_only", "reason": LAN_CAUTION},
+            "udp_scan": unavailable_capability("UDP discovery is disabled in cloud mode to avoid ambiguous open|filtered results.") if runtime_mode == "cloud" else {"status": "available", "reason": "Results can still be open|filtered when a service does not respond."},
+        },
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "success": True
     }
@@ -512,7 +548,17 @@ def get_device_recon(target, scan_udp=True, detect_os=True):
             "error": "Target device host or IP is required."
         }
 
-    # 1. Try Nmap if installed
+    # Cloud operation intentionally exposes only bounded TCP service checks.
+    # It must not market routed, provider-hosted probing as LAN/Nmap identity.
+    if is_cloud_runtime():
+        return scan_target_native(
+            clean_target,
+            scan_udp=False,
+            detect_os=False,
+            runtime_mode="cloud",
+        )
+
+    # 1. Try Nmap if installed in a local Windows/Linux/Termux runtime.
     nmap_result = scan_target_nmap(clean_target, scan_udp=scan_udp, detect_os=detect_os)
     if nmap_result and nmap_result.get("success") and (nmap_result.get("tcp_ports") or nmap_result.get("udp_ports") or nmap_result.get("os_model") != "Unknown OS"):
         return nmap_result

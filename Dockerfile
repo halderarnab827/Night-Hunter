@@ -17,6 +17,7 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV NIGHT_HUNTER_RUNTIME=cloud
 
 COPY requirement.txt ./
 RUN pip install --no-cache-dir -r requirement.txt
