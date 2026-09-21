@@ -19,12 +19,12 @@ import {
 } from "lucide-react";
 import "./LandingPage.css";
 
-const releaseBase = "https://github.com/halderarnab827/Night-Hunter/releases/tag/v1.6.2";
+const releaseBase = "https://night-hunter-f2w4.onrender.com/#downloads";
 
 const downloads = [
-  { icon: Laptop, name: "Windows (v1.6.2)", detail: "Local dashboard + Nmap workspace", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.2/NightHunter.exe", action: "Download for Windows" },
-  { icon: Terminal, name: "Linux (v1.6.2)", detail: "Local Nmap edition · .tar.gz", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.2/night-hunter-linux.tar.gz", action: "Download for Linux" },
-  { icon: Smartphone, name: "Termux (v1.6.2)", detail: "Local Nmap edition · .zip", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.2/night-hunter-termux.zip", action: "Download for Termux" },
+  { icon: Laptop, name: "Windows (v1.6.2)", detail: "Local dashboard + Nmap workspace", href: "/downloads/NightHunter.exe", action: "Download for Windows" },
+  { icon: Terminal, name: "Linux (v1.6.2)", detail: "Local Nmap edition · .tar.gz", href: "/downloads/night-hunter-linux.tar.gz", action: "Download for Linux" },
+  { icon: Smartphone, name: "Termux (v1.6.2)", detail: "Local Nmap edition · .zip", href: "/downloads/night-hunter-termux.zip", action: "Download for Termux" },
 ];
 
 export default function LandingPage() {
