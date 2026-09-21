@@ -14,6 +14,7 @@ import {
   Smartphone,
   Sparkles,
   Terminal,
+  Play,
   X,
 } from "lucide-react";
 import "./LandingPage.css";
@@ -89,18 +90,17 @@ export default function LandingPage() {
 
             <div className="nh-update-modal-actions">
               <a
-                href="#downloads"
+                href="/app"
                 className="nh-btn-primary-update"
-                onClick={() => setShowUpdateModal(false)}
               >
-                <Download size={17} /> DOWNLOAD V1.0.3 UPDATE NOW
+                <Play size={17} /> LAUNCH LIVE WEB APP (DIRECT ON SERVER)
               </a>
               <a
-                href="#update-guide"
+                href="#downloads"
                 className="nh-btn-secondary-update"
                 onClick={() => setShowUpdateModal(false)}
               >
-                Existing User Update Guide &rarr;
+                <Download size={15} /> Download Offline Package
               </a>
             </div>
           </div>
@@ -110,9 +110,9 @@ export default function LandingPage() {
       {/* Top Banner */}
       <div className="nh-top-announcement-banner">
         <span>
-          🚀 <strong>Update Alert:</strong> Night Hunter v1.0.3 is now live with Nmap-style target reconnaissance and threat engine updates!
+          🚀 <strong>Live Cloud Engine:</strong> Night Hunter runs directly on the server! All latest v1.0.3 patches active.
         </span>
-        <a href="#downloads" className="nh-banner-link">Get v1.0.3 &darr;</a>
+        <a href="/app" className="nh-banner-link">Open Web App &rarr;</a>
       </div>
 
       <header className="landing-nav" style={{ top: "42px" }}>
@@ -121,12 +121,13 @@ export default function LandingPage() {
           <span>NIGHT <b>HUNTER</b></span>
         </a>
         <nav>
+          <a href="/app" style={{ color: "#fa37c3", fontWeight: 700 }}>Live App</a>
           <a href="#features">Platform</a>
           <a href="#downloads">Downloads</a>
           <a href="#update-guide">Update Guide</a>
           <a href="#how-it-works">How to Use</a>
         </nav>
-        <a className="nav-app-link" href="#downloads">Download v1.0.3 <Download size={15} /></a>
+        <a className="nav-app-link" href="/app">Launch Live App <ArrowUpRight size={15} /></a>
       </header>
 
       <main id="top" style={{ paddingTop: "42px" }}>
@@ -139,8 +140,8 @@ export default function LandingPage() {
             <h1>See the threat.<br /><em>Own the response.</em></h1>
             <p className="hero-description">A focused security workspace for authorized analysis, target device reconnaissance, and defensive auditing across your devices.</p>
             <div className="hero-actions">
-              <a className="hero-primary" href="#downloads">Download Night Hunter v1.0.3 <Download size={18} /></a>
-              <a className="hero-secondary" href="#how-it-works">How to Use <ChevronDown size={17} /></a>
+              <a className="hero-primary" href="/app">Launch Live Cloud App <Play size={17} /></a>
+              <a className="hero-secondary" href="#downloads">Download Offline Tool <Download size={17} /></a>
             </div>
             <div className="hero-proof">
               <span><Check size={14} /> Windows, Linux &amp; Android</span>
