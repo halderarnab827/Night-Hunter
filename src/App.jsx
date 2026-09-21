@@ -22,6 +22,7 @@ import {
   RefreshCw,
   Zap,
   X,
+  Check,
 } from "lucide-react";
 
 import "./App.css";
@@ -60,9 +61,7 @@ function App() {
     "[+] System ready."
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [hasUnreadNotification, setHasUnreadNotification] = useState(() => {
-    return sessionStorage.getItem("nh_notif_v103_read") !== "true";
-  });
+  const [hasUnreadNotification, setHasUnreadNotification] = useState(false);
 
   useEffect(() => {
     applyTheme(readTheme());
@@ -633,20 +632,6 @@ function App() {
 
   return (
     <div className="night-hunter">
-      <div className="dashboard-update-bar">
-        <Sparkles size={16} color="#ffd480" />
-        {isLocal ? (
-          <>
-            <span><strong>Local Machine Build:</strong> You are running locally. Use the notification bell in the top right corner to switch directly to the live server!</span>
-            <a href="https://night-hunter-f2w4.onrender.com/app" className="btn-dash-update">Switch to Cloud Server &rarr;</a>
-          </>
-        ) : (
-          <>
-            <span><strong>Night Hunter Live Cloud Engine:</strong> Running directly on the server. All v1.0.3 patches and security modules live!</span>
-            <button onClick={() => setShowNotifications(true)} className="btn-dash-update">System Notification (v1.0.3) &rarr;</button>
-          </>
-        )}
-      </div>
       <header className="app-header">
         <button className="header-brand" type="button" onClick={resetDashboard}>
           <img className="header-logo-image" src="/night-hunter-logo.jpeg" alt="Night Hunter" />
@@ -659,14 +644,13 @@ function App() {
           </div>
           <a href="/landing" className="nav-site-link">Website &amp; Docs</a>
 
-          {/* NOTIFICATION BELL WITH UPDATE NOTICE */}
+          {/* NOTIFICATION BELL */}
           <div className="notification-bell-container">
             <button
               className={`icon-button ${hasUnreadNotification ? "has-unread-notif" : ""}`}
               onClick={() => {
                 setShowNotifications((prev) => !prev);
                 setHasUnreadNotification(false);
-                sessionStorage.setItem("nh_notif_v103_read", "true");
               }}
               aria-label="System Notifications"
               title="System Notifications"
@@ -694,21 +678,21 @@ function App() {
                 <div className="notif-dropdown-body">
                   <div className="notif-card-update">
                     <div className="notif-badge-row">
-                      <span className="notif-pill">
-                        <Sparkles size={11} /> UPDATE AVAILABLE (v1.0.3)
+                      <span className="notif-pill" style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
+                        <Check size={11} /> SYSTEM OPERATIONAL (v1.0.4)
                       </span>
-                      <span className="notif-time-tag">New</span>
+                      <span className="notif-time-tag">Active</span>
                     </div>
 
-                    <h4>Critical Version 1.0.3 Released</h4>
+                    <h4>Night Hunter Defensive Engine v1.0.4</h4>
                     <p className="notif-description">
                       {isLocal
-                        ? "You are currently running Night Hunter on your local machine (localhost). Update now or switch directly to the live cloud server where all patches and modules are automatically up-to-date!"
-                        : "Night Hunter v1.0.3 is live on the cloud server. Target device OS fingerprinting, UDP port scan (-sU), and threat detection upgrades are active."}
+                        ? "Running locally with complete device scanning and network hardware access. All security modules are fully operational."
+                        : "Night Hunter v1.0.4 is running on the live cloud server. All defensive auditing and threat detection systems are active."}
                     </p>
 
                     <div className="notif-changelog">
-                      <p><strong>Resolved in this update:</strong></p>
+                      <p><strong>Active capabilities:</strong></p>
                       <ul>
                         <li><strong>🎯 Target Nmap Recon:</strong> Scans target IPs on LAN for exact OS model, fingerprint &amp; MAC vendor.</li>
                         <li><strong>📡 UDP Port Scanner (-sU):</strong> Scans open UDP ports with service mapping.</li>
@@ -718,21 +702,22 @@ function App() {
                     </div>
 
                     <div className="notif-actions">
-                      {isLocal && (
+                      {isLocal ? (
                         <a
                           href="https://night-hunter-f2w4.onrender.com/app"
                           className="notif-btn-switch-server"
                           onClick={() => setShowNotifications(false)}
                         >
-                          <Zap size={14} /> Update &amp; Switch to Live Server &rarr;
+                          <Zap size={14} /> Open Live Cloud Dashboard &rarr;
+                        </a>
+                      ) : (
+                        <a
+                          href="/landing#downloads"
+                          className="notif-btn-download"
+                        >
+                          <Download size={13} /> Offline Packages (v1.0.4)
                         </a>
                       )}
-                      <a
-                        href="https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe"
-                        className="notif-btn-download"
-                      >
-                        <Download size={13} /> Download Offline Package (v1.0.3)
-                      </a>
                     </div>
                   </div>
                 </div>
