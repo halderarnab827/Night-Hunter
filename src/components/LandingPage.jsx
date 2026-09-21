@@ -22,7 +22,7 @@ import "./LandingPage.css";
 const releaseBase = "https://github.com/halderarnab827/Night-Hunter/releases/tag/v1.6";
 
 const downloads = [
-  { icon: Laptop, name: "Windows (v1.6)", detail: "Portable dashboard package · .zip", href: "/downloads/night-hunter-windows.zip", action: "Download for Windows" },
+  { icon: Laptop, name: "Windows (v1.6)", detail: "Desktop dashboard · .exe (14.6 MB)", href: "/downloads/NightHunter.exe", action: "Download for Windows" },
   { icon: Terminal, name: "Linux (v1.6)", detail: "Terminal edition · .tar.gz", href: "/downloads/night-hunter-linux.tar.gz", action: "Download for Linux" },
   { icon: Smartphone, name: "Termux (v1.6)", detail: "Android terminal · .zip", href: "/downloads/night-hunter-termux.zip", action: "Download for Termux" },
 ];
