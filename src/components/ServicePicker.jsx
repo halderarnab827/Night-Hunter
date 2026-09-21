@@ -103,7 +103,7 @@ export default function ServicePicker({ moduleName, onBack, onSelect }) {
       <div className="service-picker-header">
         <div className="service-picker-icon"><CategoryIcon size={28} /></div>
         <div>
-          <p className="eyebrow">NIGHT HUNTER v1.6 · SERVICE SELECTOR</p>
+          <p className="eyebrow">NIGHT HUNTER v1.6.1 · SERVICE SELECTOR</p>
           <h2>{moduleName}</h2>
           <p className="subtitle">{category.summary}</p>
         </div>

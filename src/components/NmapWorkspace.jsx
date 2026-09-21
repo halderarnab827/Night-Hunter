@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, CheckCircle2, Cpu, Download, Network, Radar, RefreshCw, Server, ShieldCheck, Terminal } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Cpu, Network, Radar, RefreshCw, Server, ShieldCheck, Terminal } from "lucide-react";
 
 export default function NmapWorkspace() {
   const [status, setStatus] = useState(null);
@@ -36,16 +36,16 @@ export default function NmapWorkspace() {
   return <section className="nmap-workspace">
     <header className="module-header network-module-header"><div className="module-heading"><div className="module-heading-icon"><Radar size={24} /></div><div><p className="eyebrow">NIGHT HUNTER · LOCAL NMAP</p><h2>Verified Nmap Workspace</h2><p className="subtitle">Named profiles · XML evidence · no simulated findings</p></div></div><div className={`module-state ${running ? "busy" : status?.available ? "success" : ""}`}><span />{running ? "SCANNING" : status?.available ? "NMAP READY" : "NMAP UNAVAILABLE"}</div></header>
 
-    {!status?.available && status?.runtime === "cloud" && <section className="local-access-notice"><div className="local-access-icon"><Download size={22} /></div><div><span>COMPLETE LOCAL ACCESS</span><h3>Download Night Hunter for verified Nmap output</h3><p>The cloud edition intentionally does not run LAN-level Nmap scans. For full TCP/UDP profiles, OS fingerprint attempts, MAC/vendor discovery, and the complete local evidence report, use the Windows, Linux, or Termux edition on your own device.</p><div className="local-access-links"><a href="/downloads/night-hunter-windows.zip">Windows</a><a href="/downloads/night-hunter-linux.tar.gz">Linux</a><a href="/downloads/night-hunter-termux.zip">Termux</a></div></div></section>}
-    <div className="network-caution-banner"><div className="caution-icon-box"><AlertTriangle size={18} /></div><div><strong>LOCAL ONLY:</strong> Full Nmap profiles run only on the Windows, Linux, or Termux installation. The hosted cloud app cannot scan from your LAN or provide reliable OS/MAC results. Use only with targets you own or are authorized to assess.</div></div>
+    {status?.runtime === "cloud" && <section className="cloud-network-summary"><Server size={20} /><div><span>PUBLIC DASHBOARD</span><h3>Network scans run from the installed Night Hunter app</h3><p>The public site does not initiate scans. Open the downloaded Windows, Linux, or Termux application to use your device’s local Nmap engine and receive the complete evidence report.</p></div></section>}
+    {status?.runtime !== "cloud" && <div className="network-caution-banner"><div className="caution-icon-box"><AlertTriangle size={18} /></div><div><strong>AUTHORIZED USE:</strong> Local Nmap scans run from this computer. Use only with systems and networks you own or are authorized to assess.</div></div>}
 
-    <form className="nmap-form" onSubmit={scan}>
+    {status?.runtime !== "cloud" && <form className="nmap-form" onSubmit={scan}>
       <label>AUTHORIZED TARGET<input value={target} onChange={(event) => setTarget(event.target.value)} disabled={running || !status?.available} placeholder="192.168.1.20 or host.local" /></label>
       <label>NMAP PROFILE<select value={profile} onChange={(event) => setProfile(event.target.value)} disabled={running || !status?.available}>{profiles.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
       <button className="advanced-network-run" disabled={running || !status?.available} type="submit">{running ? <RefreshCw className="spin-icon" size={17} /> : <Radar size={17} />}{running ? "RUNNING NMAP..." : "RUN LOCAL NMAP"}</button>
       {error && <p className="advanced-network-error"><AlertTriangle size={16} />{error}</p>}
       <p className="advanced-network-note"><ShieldCheck size={15} />{status?.reason || "Checking local Nmap…"}</p>
-    </form>
+    </form>}
 
     {selected && <section className="nmap-profile-note"><Terminal size={18} /><div><strong>{selected.label}</strong><p>{selected.description}</p>{selected.requires_admin && <small>OS or UDP features may require Administrator/root privileges.</small>}</div></section>}
 
