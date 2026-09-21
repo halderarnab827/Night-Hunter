@@ -33,6 +33,7 @@ import PhishingAnalyzer from "./components/PhishingAnalyzer";
 import Cryptography from "./components/Cryptography";
 import Reports from "./components/Reports";
 import SettingsPage from "./components/Settings";
+import ServicePicker, { getDefaultService } from "./components/ServicePicker";
 import { applyTheme, readTheme } from "./theme";
 
 const translations = {
@@ -108,17 +109,26 @@ function App() {
 
 
   function openPage(page) {
+    if (modules.some((module) => module.name === page && page !== "Reports")) {
+      launchModule(page);
+      return;
+    }
     setActivePage(page);
   }
 
 
   function launchModule(moduleName) {
-    setActivePage(moduleName);
+    if (moduleName === "Reports") {
+      setActivePage(moduleName);
+      return;
+    }
+
+    setActivePage(`select:${moduleName}`);
 
     setTerminalLines((oldLines) => [
       ...oldLines,
-      `[>] Opening ${moduleName}...`,
-      `[+] ${moduleName} interface ready.`
+      `[>] Opening ${moduleName} service selector...`,
+      `[+] Select a service to continue.`
     ]);
   }
 
@@ -138,6 +148,38 @@ function App() {
 
     if (activePage === "Dashboard") {
       return <Dashboard />;
+    }
+    if (activePage.startsWith("select:")) {
+      const moduleName = activePage.replace("select:", "");
+      return (
+        <ServicePicker
+          moduleName={moduleName}
+          onBack={resetDashboard}
+          onSelect={(serviceName) => {
+            setActivePage(`tool:${moduleName}:${serviceName}`);
+            setTerminalLines((oldLines) => [
+              ...oldLines,
+              `[>] ${moduleName} · ${serviceName} selected.`,
+              `[+] Authorized service workspace ready.`,
+            ]);
+          }}
+        />
+      );
+    }
+    if (activePage.startsWith("tool:")) {
+      const [, moduleName, ...serviceParts] = activePage.split(":");
+      const serviceName = serviceParts.join(":") || getDefaultService(moduleName);
+      const serviceBanner = (
+        <div className="selected-service-banner">
+          <div><span>SELECTED SERVICE</span><strong>{serviceName}</strong></div>
+          <button type="button" onClick={() => setActivePage(`select:${moduleName}`)}>Change service</button>
+        </div>
+      );
+      if (moduleName === "Web Security") return <>{serviceBanner}<WebSecurity /></>;
+      if (moduleName === "Password Security") return <>{serviceBanner}<PasswordSecurity /></>;
+      if (moduleName === "Network Security") return <>{serviceBanner}<NetworkSecurity /></>;
+      if (moduleName === "Phishing Analyzer") return <>{serviceBanner}<PhishingAnalyzer /></>;
+      if (moduleName === "Cryptography") return <>{serviceBanner}<Cryptography /></>;
     }
     if (activePage === "Web Security") {
   return <WebSecurity />;
@@ -365,7 +407,7 @@ function App() {
           </div>
 
           <div className="version">
-            NIGHT HUNTER <strong>v1.0</strong>
+            NIGHT HUNTER <strong>v1.4</strong>
           </div>
 
         </div>
@@ -679,16 +721,16 @@ function App() {
                   <div className="notif-card-update">
                     <div className="notif-badge-row">
                       <span className="notif-pill" style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
-                        <Check size={11} /> SYSTEM OPERATIONAL (v1.0.4)
+                        <Check size={11} /> SYSTEM OPERATIONAL (v1.4)
                       </span>
                       <span className="notif-time-tag">Active</span>
                     </div>
 
-                    <h4>Night Hunter Defensive Engine v1.0.4</h4>
+                    <h4>Night Hunter Defensive Engine v1.4</h4>
                     <p className="notif-description">
                       {isLocal
                         ? "Running locally with complete device scanning and network hardware access. All security modules are fully operational."
-                        : "Night Hunter v1.0.4 is running on the live cloud server. All defensive auditing and threat detection systems are active."}
+                        : "Night Hunter v1.4 is running on the live cloud server. Select a focused defensive service before beginning an assessment."}
                     </p>
 
                     <div className="notif-changelog">
@@ -715,7 +757,7 @@ function App() {
                           href="/landing#downloads"
                           className="notif-btn-download"
                         >
-                          <Download size={13} /> Offline Packages (v1.0.4)
+                          <Download size={13} /> Offline Packages (v1.4)
                         </a>
                       )}
                     </div>
@@ -839,7 +881,7 @@ function App() {
           </div>
 
           <p>
-            Night Hunter v1.0
+            Night Hunter v1.4
           </p>
 
         </div>

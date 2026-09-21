@@ -42,14 +42,14 @@ def api_status():
         "success": True,
         "tool": "NIGHT HUNTER",
         "status": "online",
-        "version": "1.0.4"
+        "version": "1.4"
     })
 
 @app.get("/api/version")
 def api_version():
     return jsonify({
         "success": True,
-        "version": "1.0.4",
+        "version": "1.4",
         "release_url": "https://night-hunter-f2w4.onrender.com/#downloads"
     })
 
