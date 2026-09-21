@@ -19,6 +19,10 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
+if ! command -v nmap >/dev/null 2>&1; then
+  echo "[!] Nmap is not installed. Install it for the local Nmap workspace (for example: sudo apt install nmap)."
+fi
+
 mkdir -p "$APP_DIR" "$BIN_DIR"
 rm -rf "$APP_DIR/app"
 mkdir -p "$APP_DIR/app"

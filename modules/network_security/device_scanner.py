@@ -62,6 +62,36 @@ COMMON_UDP_PORTS = {
     5353: "MDNS"
 }
 
+# Profiles are intentionally fixed rather than accepting raw command-line
+# arguments. This exposes useful Nmap discovery features without turning the
+# dashboard into an arbitrary command runner.
+NMAP_PROFILES = {
+    "inventory": {
+        "label": "Host inventory",
+        "arguments": ["-sT", "-sV", "--version-light", "-O", "--osscan-guess", "--traceroute", "--top-ports", "1000"],
+        "requires_admin": True,
+        "description": "TCP service inventory, OS fingerprint attempt and route trace.",
+    },
+    "tcp_full": {
+        "label": "All TCP ports",
+        "arguments": ["-sT", "-sV", "--version-light", "-p-"],
+        "requires_admin": False,
+        "description": "TCP connect scan across ports 1–65535 with service detection.",
+    },
+    "os": {
+        "label": "OS fingerprint",
+        "arguments": ["-sT", "-sV", "--version-light", "-O", "--osscan-guess", "--top-ports", "1000"],
+        "requires_admin": True,
+        "description": "Nmap OS fingerprint attempt using the top 1,000 TCP ports.",
+    },
+    "udp": {
+        "label": "Top UDP ports",
+        "arguments": ["-sU", "-sV", "--version-light", "--top-ports", "100"],
+        "requires_admin": True,
+        "description": "UDP scan of Nmap’s top 100 ports; silent services may be indeterminate.",
+    },
+}
+
 OUI_VENDORS = {
     "00:0C:29": "VMware",
     "00:50:56": "VMware",
@@ -116,6 +146,88 @@ def find_nmap_path():
         if p and os.path.exists(p):
             return p
     return None
+
+
+def nmap_profile_status():
+    """Return local Nmap availability and the safe profiles Night Hunter exposes."""
+    executable = find_nmap_path()
+    return {
+        "available": bool(executable) and not is_cloud_runtime(),
+        "runtime": "cloud" if is_cloud_runtime() else "local",
+        "reason": (
+            "Nmap scans run only in the local Windows, Linux or Termux edition."
+            if is_cloud_runtime() else
+            "Install Nmap and restart Night Hunter." if not executable else
+            "Nmap is available locally."
+        ),
+        "profiles": [
+            {"id": profile_id, **details}
+            for profile_id, details in NMAP_PROFILES.items()
+        ],
+    }
+
+
+def run_nmap_profile(target, profile_id="inventory", timeout=600):
+    """Run a bounded, named local Nmap profile and return parsed XML evidence."""
+    status = nmap_profile_status()
+    if not status["available"]:
+        return {"success": False, "error": status["reason"], "nmap": status}
+
+    profile = NMAP_PROFILES.get(profile_id)
+    if not profile:
+        return {"success": False, "error": "Unknown Nmap profile.", "nmap": status}
+
+    clean_target = clean_target_host(target)
+    if not clean_target:
+        return {"success": False, "error": "Target host or IP is required.", "nmap": status}
+
+    command = [find_nmap_path(), *profile["arguments"], "-T3", "-oX", "-", clean_target]
+    try:
+        process = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
+        xml_output = process.stdout.strip()
+        if "<nmaprun" not in xml_output:
+            message = process.stderr.strip() or "Nmap did not return a scan report."
+            return {"success": False, "error": message[:1200], "nmap": status}
+
+        root = ET.fromstring(xml_output)
+        hosts = []
+        for host in root.findall("host"):
+            addresses = [address.get("addr") for address in host.findall("address") if address.get("addr")]
+            hostname = host.find("hostnames/hostname")
+            ports = []
+            for port in host.findall("ports/port"):
+                state = port.find("state")
+                service = port.find("service")
+                ports.append({
+                    "port": int(port.get("portid", 0)),
+                    "protocol": port.get("protocol", "tcp").upper(),
+                    "state": state.get("state", "unknown").upper() if state is not None else "UNKNOWN",
+                    "service": service.get("name", "unknown") if service is not None else "unknown",
+                    "product": service.get("product", "") if service is not None else "",
+                    "version": service.get("version", "") if service is not None else "",
+                })
+            osmatch = host.find("os/osmatch")
+            hosts.append({
+                "addresses": addresses,
+                "hostname": hostname.get("name") if hostname is not None else "",
+                "status": host.find("status").get("state", "unknown") if host.find("status") is not None else "unknown",
+                "os": osmatch.get("name") if osmatch is not None else "Inconclusive",
+                "os_accuracy": osmatch.get("accuracy") if osmatch is not None else None,
+                "ports": ports,
+            })
+        return {
+            "success": True,
+            "target": clean_target,
+            "profile": {"id": profile_id, **profile},
+            "engine": f"Nmap {root.get('version', '')}".strip(),
+            "hosts": hosts,
+            "command": " ".join(command[1:]),
+            "warning": "OS detection is inconclusive when Nmap lacks sufficient open and closed port responses.",
+        }
+    except subprocess.TimeoutExpired:
+        return {"success": False, "error": "Nmap timed out before completing this profile.", "nmap": status}
+    except Exception as error:
+        return {"success": False, "error": f"Nmap scan failed: {error}", "nmap": status}
 
 
 def get_mac_from_arp(ip):

@@ -17,6 +17,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from modules.web_security.pentest import run_web_pentest
 from modules.password_security import checker
 from modules.network_security import checker as network_checker
+from modules.network_security.device_scanner import nmap_profile_status, run_nmap_profile
 from modules.phishing.url_analyzer import PhishingAnalyzer
 from modules.cryptography import crypto_tools
 from modules.reports.report_exporter import REPORTS_DIRECTORY
@@ -42,14 +43,14 @@ def api_status():
         "success": True,
         "tool": "NIGHT HUNTER",
         "status": "online",
-        "version": "1.5"
+        "version": "1.6"
     })
 
 @app.get("/api/version")
 def api_version():
     return jsonify({
         "success": True,
-        "version": "1.5",
+        "version": "1.6",
         "release_url": "https://night-hunter-f2w4.onrender.com/#downloads"
     })
 
@@ -279,6 +280,23 @@ def network_security_stream():
             "X-Accel-Buffering": "no"
         }
     )
+
+
+@app.get("/api/network-security/nmap/status")
+def network_nmap_status():
+    return jsonify({"success": True, "nmap": nmap_profile_status()})
+
+
+@app.post("/api/network-security/nmap")
+def network_nmap_scan():
+    data = request.get_json(silent=True) or {}
+    target = str(data.get("target", "")).strip()
+    profile = str(data.get("profile", "inventory")).strip()
+    result = run_nmap_profile(target, profile)
+    if not result.get("success"):
+        return jsonify(result), 400
+    remember_activity("Network Security", target, "Complete", f"Completed local Nmap {profile} profile.", result)
+    return jsonify(result)
 
 
 @app.post("/api/phishing")

@@ -286,7 +286,7 @@ def main():
 
         print()
         show_banner()
-        print("          NIGHT HUNTER v1.5 · EVIDENCE-FIRST DEFENSIVE OPS")
+        print("          NIGHT HUNTER v1.6 · LOCAL NMAP · EVIDENCE-FIRST OPS")
         print("     Official Site: https://night-hunter-f2w4.onrender.com")
 
         print()

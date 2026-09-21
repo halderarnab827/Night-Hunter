@@ -29,6 +29,7 @@ import "./App.css";
 import WebSecurity from "./components/WebSecurity";
 import PasswordSecurity from "./components/PasswordSecurity";
 import NetworkSecurity from "./components/AdvancedNetworkSecurity";
+import NmapWorkspace from "./components/NmapWorkspace";
 import PhishingAnalyzer from "./components/PhishingAnalyzer";
 import Cryptography from "./components/Cryptography";
 import Reports from "./components/Reports";
@@ -177,7 +178,7 @@ function App() {
       );
       if (moduleName === "Web Security") return <>{serviceBanner}<WebSecurity /></>;
       if (moduleName === "Password Security") return <>{serviceBanner}<PasswordSecurity /></>;
-      if (moduleName === "Network Security") return <>{serviceBanner}<NetworkSecurity /></>;
+      if (moduleName === "Network Security") return <>{serviceBanner}<NmapWorkspace /></>;
       if (moduleName === "Phishing Analyzer") return <>{serviceBanner}<PhishingAnalyzer /></>;
       if (moduleName === "Cryptography") return <>{serviceBanner}<Cryptography /></>;
     }
@@ -188,7 +189,7 @@ function App() {
       return <PasswordSecurity />;
     }
     if (activePage === "Network Security") {
-  return <NetworkSecurity />;
+  return <NmapWorkspace />;
 }
     if (activePage === "Phishing Analyzer") {
       return <PhishingAnalyzer />;
@@ -407,7 +408,7 @@ function App() {
           </div>
 
           <div className="version">
-            NIGHT HUNTER <strong>v1.5</strong>
+            NIGHT HUNTER <strong>v1.6</strong>
           </div>
 
         </div>
@@ -721,16 +722,16 @@ function App() {
                   <div className="notif-card-update">
                     <div className="notif-badge-row">
                       <span className="notif-pill" style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
-                        <Check size={11} /> SYSTEM OPERATIONAL (v1.5)
+                        <Check size={11} /> SYSTEM OPERATIONAL (v1.6)
                       </span>
                       <span className="notif-time-tag">Active</span>
                     </div>
 
-                    <h4>Night Hunter Defensive Engine v1.5</h4>
+                    <h4>Night Hunter Defensive Engine v1.6</h4>
                     <p className="notif-description">
                       {isLocal
                         ? "Running locally with complete device scanning and network hardware access. All security modules are fully operational."
-                        : "Night Hunter v1.5 is running on the live cloud server. Results identify the scanner runtime and clearly mark unavailable capabilities."}
+                        : "Night Hunter v1.6 is running on the live cloud server. Local Nmap profiles remain unavailable in cloud mode and are clearly labelled."}
                     </p>
 
                     <div className="notif-changelog">
@@ -757,7 +758,7 @@ function App() {
                           href="/landing#downloads"
                           className="notif-btn-download"
                         >
-                          <Download size={13} /> Offline Packages (v1.5)
+                          <Download size={13} /> Offline Packages (v1.6)
                         </a>
                       )}
                     </div>
@@ -881,7 +882,7 @@ function App() {
           </div>
 
           <p>
-            Night Hunter v1.5
+            Night Hunter v1.6
           </p>
 
         </div>

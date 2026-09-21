@@ -7,7 +7,7 @@ APP_DIR="${PREFIX}/share/${APP_NAME}"
 SOURCE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
 pkg update -y
-pkg install -y python
+pkg install -y python nmap
 
 rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR"

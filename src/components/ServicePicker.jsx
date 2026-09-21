@@ -45,12 +45,12 @@ const serviceCatalog = {
     icon: Network,
     summary: "Choose a defensive network-inspection service for an authorized host.",
     services: [
-      ["Target Device Recon", "Resolve an approved host and inspect reachability.", Radar],
-      ["TCP Port & Service Scan", "Discover common TCP services on an authorized target.", ServerCog],
-      ["UDP Port Discovery", "Inspect common UDP services with safe reporting.", RadioIcon],
-      ["OS Fingerprint", "Collect available operating-system fingerprint signals.", Fingerprint],
-      ["HTTP Banner Inspection", "Review service banners exposed by approved hosts.", Globe2],
-      ["Network Exposure Report", "Summarize detected services and next actions.", FileSearch],
+      ["Host Inventory", "Nmap top-ports, service detection, OS attempt and route trace.", Radar],
+      ["All TCP Ports", "Nmap TCP connect scan of ports 1–65535 with service detection.", ServerCog],
+      ["Top UDP Ports", "Nmap UDP service scan of the top 100 ports; results can be indeterminate.", RadioIcon],
+      ["OS Fingerprint", "Nmap fingerprint attempt; requires local Nmap and adequate responses.", Fingerprint],
+      ["Service Version Scan", "Nmap service/version detection through the local app.", Globe2],
+      ["Nmap Evidence Report", "View verified ports, service details and scan profile evidence.", FileSearch],
     ],
   },
   "Phishing Analyzer": {
@@ -103,7 +103,7 @@ export default function ServicePicker({ moduleName, onBack, onSelect }) {
       <div className="service-picker-header">
         <div className="service-picker-icon"><CategoryIcon size={28} /></div>
         <div>
-          <p className="eyebrow">NIGHT HUNTER v1.5 · SERVICE SELECTOR</p>
+          <p className="eyebrow">NIGHT HUNTER v1.6 · SERVICE SELECTOR</p>
           <h2>{moduleName}</h2>
           <p className="subtitle">{category.summary}</p>
         </div>
