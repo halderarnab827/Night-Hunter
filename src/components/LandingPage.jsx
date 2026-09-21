@@ -19,12 +19,12 @@ import {
 } from "lucide-react";
 import "./LandingPage.css";
 
-const releaseBase = "https://github.com/halderarnab827/Night-Hunter/releases/tag/v1.6.1";
+const releaseBase = "https://github.com/halderarnab827/Night-Hunter/releases/tag/v1.6.2";
 
 const downloads = [
-  { icon: Laptop, name: "Windows (v1.6.1)", detail: "Local dashboard + Nmap workspace", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.1/NightHunter.exe", action: "Download for Windows" },
-  { icon: Terminal, name: "Linux (v1.6.1)", detail: "Local Nmap edition · .tar.gz", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.1/night-hunter-linux.tar.gz", action: "Download for Linux" },
-  { icon: Smartphone, name: "Termux (v1.6.1)", detail: "Local Nmap edition · .zip", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.1/night-hunter-termux.zip", action: "Download for Termux" },
+  { icon: Laptop, name: "Windows (v1.6.2)", detail: "Local dashboard + Nmap workspace", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.2/NightHunter.exe", action: "Download for Windows" },
+  { icon: Terminal, name: "Linux (v1.6.2)", detail: "Local Nmap edition · .tar.gz", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.2/night-hunter-linux.tar.gz", action: "Download for Linux" },
+  { icon: Smartphone, name: "Termux (v1.6.2)", detail: "Local Nmap edition · .zip", href: "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.6.2/night-hunter-termux.zip", action: "Download for Termux" },
 ];
 
 export default function LandingPage() {
@@ -54,7 +54,7 @@ export default function LandingPage() {
           <div className="hero-orbit orbit-two" />
           <div className="hero-grid-lines" />
           <div className="hero-copy">
-            <p className="landing-eyebrow"><span /> DEFENSIVE SECURITY PLATFORM · V1.6.1</p>
+            <p className="landing-eyebrow"><span /> DEFENSIVE SECURITY PLATFORM · V1.6.2</p>
             <h1>See the threat.<br /><em>Own the response.</em></h1>
             <p className="hero-description">A focused security workspace for authorized analysis, target device reconnaissance, and defensive auditing across your devices.</p>
             <div className="hero-actions">
@@ -90,7 +90,7 @@ export default function LandingPage() {
 
         <section className="downloads-section" id="downloads">
           <div className="downloads-title">
-            <p className="landing-eyebrow"><span /> LATEST STABLE RELEASE (V1.6.1)</p>
+            <p className="landing-eyebrow"><span /> LATEST STABLE RELEASE (V1.6.2)</p>
             <h2>Choose your<br /><em>environment.</em></h2>
           </div>
           <div className="download-list">
@@ -164,7 +164,7 @@ export default function LandingPage() {
       <footer className="landing-footer">
         <div className="landing-brand"><img src="/night-hunter-logo.jpeg" alt="Night Hunter Logo" /><span>NIGHT <b>HUNTER</b></span></div>
         <p>Defensive tooling for authorized security testing.</p>
-        <a href="#downloads">Download Night Hunter v1.6.1 <Download size={15} /></a>
+        <a href="#downloads">Download Night Hunter v1.6.2 <Download size={15} /></a>
       </footer>
     </div>
   );

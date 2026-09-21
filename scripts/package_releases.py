@@ -112,7 +112,7 @@ def build_windows():
     shutil.rmtree(stage, ignore_errors=True)
 
 if __name__ == "__main__":
-    print("[*] Packaging Night Hunter v1.6.1 releases...")
+    print("[*] Packaging Night Hunter v1.6.2 releases...")
     build_linux()
     build_termux()
     build_windows()

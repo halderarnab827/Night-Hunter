@@ -408,7 +408,7 @@ function App() {
           </div>
 
           <div className="version">
-            NIGHT HUNTER <strong>v1.6.1</strong>
+            NIGHT HUNTER <strong>v1.6.2</strong>
           </div>
 
         </div>
@@ -722,16 +722,16 @@ function App() {
                   <div className="notif-card-update">
                     <div className="notif-badge-row">
                       <span className="notif-pill" style={{ background: "rgba(34, 197, 94, 0.15)", color: "#4ade80", borderColor: "rgba(34, 197, 94, 0.4)" }}>
-                        <Check size={11} /> SYSTEM OPERATIONAL (v1.6.1)
+                        <Check size={11} /> SYSTEM OPERATIONAL (v1.6.2)
                       </span>
                       <span className="notif-time-tag">Active</span>
                     </div>
 
-                    <h4>Night Hunter Defensive Engine v1.6.1</h4>
+                    <h4>Night Hunter Defensive Engine v1.6.2</h4>
                     <p className="notif-description">
                       {isLocal
                         ? "Running locally with complete device scanning and network hardware access. All security modules are fully operational."
-                        : "Night Hunter v1.6.1 is running on the public dashboard. The installed application runs all local scanning features on the user's device."}
+                        : "Night Hunter v1.6.2 is running on the public dashboard. The installed application runs all local scanning features on the user's device."}
                     </p>
 
                     <div className="notif-changelog">
@@ -758,7 +758,7 @@ function App() {
                           href="/landing#downloads"
                           className="notif-btn-download"
                         >
-                          <Download size={13} /> Offline Packages (v1.6.1)
+                          <Download size={13} /> Offline Packages (v1.6.2)
                         </a>
                       )}
                     </div>
@@ -882,7 +882,7 @@ function App() {
           </div>
 
           <p>
-            Night Hunter v1.6.1
+            Night Hunter v1.6.2
           </p>
 
         </div>
