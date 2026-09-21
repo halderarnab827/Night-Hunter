@@ -17,6 +17,10 @@ import {
   Play,
   RotateCcw,
   Sparkles,
+  AlertTriangle,
+  Download,
+  RefreshCw,
+  X,
 } from "lucide-react";
 
 import "./App.css";
@@ -47,6 +51,20 @@ function App() {
     "[+] Report engine loaded.",
     "[+] System ready."
   ]);
+  const [showMandatoryModal, setShowMandatoryModal] = useState(() => {
+    return sessionStorage.getItem("nh_v103_update_acknowledged") !== "true";
+  });
+
+  function handleDownloadUpdate() {
+    window.open("https://night-hunter-f2w4.onrender.com/#downloads", "_blank");
+    sessionStorage.setItem("nh_v103_update_acknowledged", "true");
+    setShowMandatoryModal(false);
+  }
+
+  function handleAcknowledgeUpdate() {
+    sessionStorage.setItem("nh_v103_update_acknowledged", "true");
+    setShowMandatoryModal(false);
+  }
 
   useEffect(() => {
     applyTheme(readTheme());
@@ -617,6 +635,72 @@ function App() {
 
   return (
     <div className="night-hunter">
+      {/* MANDATORY UPDATE MODAL (LOCKS DASHBOARD UNTIL UPDATED) */}
+      {showMandatoryModal && (
+        <div className="nh-update-modal-backdrop" role="dialog" aria-modal="true">
+          <div className="nh-update-modal-card">
+            <div className="nh-update-badge-row">
+              <span className="nh-update-pill">
+                <Sparkles size={14} /> NEW VERSION v1.0.3 RELEASED
+              </span>
+              <span className="nh-lock-status-pill">
+                <AlertTriangle size={13} /> ACTION REQUIRED
+              </span>
+            </div>
+
+            <h2>Mandatory Version Update Required</h2>
+            <p className="nh-update-tagline">
+              Your local installation must be updated to <strong>v1.0.3</strong>. Previous builds contain critical service glitches in Network Information, OS scanning, and Phishing detection. The dashboard is paused until you download the update.
+            </p>
+
+            <div className="nh-update-highlights">
+              <p><strong>What is resolved in v1.0.3:</strong></p>
+              <ul>
+                <li>
+                  <strong>🎯 Nmap Target Device Recon:</strong> Fixed Network Information! Now scans LAN target devices for exact <u>OS Model &amp; Fingerprint</u>, device name, and MAC vendor instead of local machine info.
+                </li>
+                <li>
+                  <strong>📡 UDP Port Scanner (-sU):</strong> Scans open UDP ports with service mapping.
+                </li>
+                <li>
+                  <strong>⚠️ LAN Caution Warning:</strong> Safety reminder that target devices must reside on your local subnet.
+                </li>
+                <li>
+                  <strong>🛡️ Upgraded Phishing Engine:</strong> High-risk brand impersonation on paths/subdomains now flagged accurately.
+                </li>
+              </ul>
+            </div>
+
+            <div className="nh-update-warning-box">
+              <AlertTriangle size={18} color="#ffb84d" />
+              <span>
+                To ensure security operations and scans are accurate, please download the updated release.
+              </span>
+            </div>
+
+            <div className="nh-update-modal-actions">
+              <button
+                className="nh-btn-primary-update"
+                onClick={handleDownloadUpdate}
+              >
+                <Download size={17} /> DOWNLOAD V1.0.3 UPDATE NOW
+              </button>
+              <button
+                className="nh-btn-secondary-update"
+                onClick={handleAcknowledgeUpdate}
+              >
+                I have updated (Continue) &rarr;
+              </button>
+            </div>
+
+            <div className="nh-update-quick-commands">
+              <small>Linux / Termux quick update command:</small>
+              <code>cd ~/.local/share/NightHunter/app &amp;&amp; git pull origin main</code>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="dashboard-update-bar">
         <Sparkles size={16} color="#ffd480" />
         <span><strong>Night Hunter v1.0.3 Update Available:</strong> Nmap target reconnaissance, UDP -sU port scan, and threat engine updates.</span>

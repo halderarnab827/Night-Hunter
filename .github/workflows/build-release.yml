@@ -4,9 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag, for example v1.0.0
+        description: Release tag, for example v1.0.3
         required: true
-        default: v1.0.0
+        default: v1.0.3
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -67,6 +70,6 @@ jobs:
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag }}
+          TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           gh release create "$TAG" release-files/windows-download/NightHunter.exe release-files/terminal-downloads/night-hunter-linux.tar.gz release-files/terminal-downloads/night-hunter-termux.zip --title "Night Hunter $TAG" --generate-notes

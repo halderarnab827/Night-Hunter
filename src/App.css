@@ -4446,3 +4446,175 @@ button {
   text-decoration: none;
   font-size: 11px;
 }
+
+/* Mandatory Update Modal Styles for App Dashboard */
+.nh-update-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 3, 10, 0.92);
+  backdrop-filter: blur(10px);
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  animation: fadeInAppModal 0.25s ease-out;
+}
+
+.nh-update-modal-card {
+  max-width: 620px;
+  width: 100%;
+  background: linear-gradient(145deg, #181427, #0d0b16);
+  border: 1px solid rgba(223, 93, 255, 0.55);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(223, 93, 255, 0.25);
+  color: #faf8ff;
+  position: relative;
+  text-align: left;
+}
+
+.nh-update-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.nh-update-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(250, 55, 195, 0.25), rgba(120, 75, 255, 0.25));
+  border: 1px solid #fa37c3;
+  color: #ff85e0;
+  font: 700 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.nh-lock-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 170, 0, 0.15);
+  border: 1px solid #ffb84d;
+  color: #ffd280;
+  font: 700 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.nh-update-modal-card h2 {
+  font-size: 22px;
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+.nh-update-tagline {
+  color: #c9c3d5;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.nh-update-highlights {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: #d5c6e6;
+}
+
+.nh-update-highlights p {
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.nh-update-highlights ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.nh-update-warning-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: rgba(255, 170, 0, 0.1);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  color: #ffd280;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.nh-update-modal-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nh-btn-primary-update {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(105deg, #fa37c3, #784bff);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  box-shadow: 0 8px 25px rgba(250, 55, 195, 0.35);
+}
+
+.nh-btn-secondary-update {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e9e4f2;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.nh-btn-secondary-update:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nh-update-quick-commands {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  color: #aaa0b4;
+}
+
+.nh-update-quick-commands code {
+  display: block;
+  margin-top: 6px;
+  background: #06050a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 7px 10px;
+  color: #79ffa8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+@keyframes fadeInAppModal {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}

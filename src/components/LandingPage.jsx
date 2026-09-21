@@ -18,12 +18,12 @@ import {
 } from "lucide-react";
 import "./LandingPage.css";
 
-const releaseBase = "https://github.com/halderarnab827/Night-Hunter/releases/download/v1.0.2";
+const releaseBase = "https://github.com/halderarnab827/Night-Hunter/releases/tag/v1.0.3";
 
 const downloads = [
-  { icon: Laptop, name: "Windows (v1.0.3)", detail: "Desktop dashboard · .exe", href: `${releaseBase}/NightHunter.exe`, action: "Download for Windows" },
-  { icon: Terminal, name: "Linux (v1.0.3)", detail: "Terminal edition · .tar.gz", href: `${releaseBase}/night-hunter-linux.tar.gz`, action: "Download for Linux" },
-  { icon: Smartphone, name: "Termux (v1.0.3)", detail: "Android terminal · .zip", href: `${releaseBase}/night-hunter-termux.zip`, action: "Download for Termux" },
+  { icon: Laptop, name: "Windows (v1.0.3)", detail: "Desktop dashboard · .exe (14.6 MB)", href: "/downloads/NightHunter.exe", action: "Download for Windows" },
+  { icon: Terminal, name: "Linux (v1.0.3)", detail: "Terminal edition · .tar.gz", href: "/downloads/night-hunter-linux.tar.gz", action: "Download for Linux" },
+  { icon: Smartphone, name: "Termux (v1.0.3)", detail: "Android terminal · .zip", href: "/downloads/night-hunter-termux.zip", action: "Download for Termux" },
 ];
 
 export default function LandingPage() {

@@ -6,8 +6,9 @@ from flask import Flask, Response, jsonify, request, send_from_directory, stream
 from flask_cors import CORS
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[1]
 FRONTEND_DIST = PROJECT_ROOT / "dist" if (PROJECT_ROOT / "dist").is_dir() else (PROJECT_ROOT / "frontend" / "dist")
+RELEASES_DIR = PROJECT_ROOT / "releases"
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -362,6 +363,14 @@ def reports():
 def activity_history():
     """Dashboard activity, saved locally after each completed module action."""
     return jsonify({"success": True, "history": get_activity_history()})
+
+
+@app.get("/downloads/<path:filename>")
+def download_release(filename):
+    """Direct high-speed download for Night Hunter release packages."""
+    if RELEASES_DIR.is_dir() and (RELEASES_DIR / filename).is_file():
+        return send_from_directory(RELEASES_DIR, filename, as_attachment=True)
+    return jsonify({"success": False, "error": f"Release file '{filename}' not found."}), 404
 
 
 @app.get("/")
