@@ -20,6 +20,7 @@ import {
   AlertTriangle,
   Download,
   RefreshCw,
+  Zap,
   X,
 } from "lucide-react";
 
@@ -58,29 +59,10 @@ function App() {
     "[+] Report engine loaded.",
     "[+] System ready."
   ]);
-  const [showMandatoryModal, setShowMandatoryModal] = useState(() => {
-    // Only lock local instances if not yet acknowledged; cloud server runs latest build automatically
-    if (!isLocal) return false;
-    return sessionStorage.getItem("nh_v103_update_acknowledged") !== "true";
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [hasUnreadNotification, setHasUnreadNotification] = useState(() => {
+    return sessionStorage.getItem("nh_notif_v103_read") !== "true";
   });
-  const [showPatchNotes, setShowPatchNotes] = useState(false);
-
-  function handleDownloadUpdate() {
-    window.open("https://night-hunter-f2w4.onrender.com/#downloads", "_blank");
-    sessionStorage.setItem("nh_v103_update_acknowledged", "true");
-    setShowMandatoryModal(false);
-  }
-
-  function handleOpenCloudServer() {
-    window.location.href = "https://night-hunter-f2w4.onrender.com/app";
-    sessionStorage.setItem("nh_v103_update_acknowledged", "true");
-    setShowMandatoryModal(false);
-  }
-
-  function handleAcknowledgeUpdate() {
-    sessionStorage.setItem("nh_v103_update_acknowledged", "true");
-    setShowMandatoryModal(false);
-  }
 
   useEffect(() => {
     applyTheme(readTheme());
@@ -651,148 +633,17 @@ function App() {
 
   return (
     <div className="night-hunter">
-      {/* MANDATORY UPDATE MODAL (LOCKS DASHBOARD UNTIL UPDATED) */}
-      {showMandatoryModal && (
-        <div className="nh-update-modal-backdrop" role="dialog" aria-modal="true">
-          <div className="nh-update-modal-card">
-            <div className="nh-update-badge-row">
-              <span className="nh-update-pill">
-                <Sparkles size={14} /> NEW VERSION v1.0.3 RELEASED
-              </span>
-              <span className="nh-lock-status-pill">
-                <AlertTriangle size={13} /> ACTION REQUIRED
-              </span>
-            </div>
-
-            <h2>Mandatory Version Update Required</h2>
-            <p className="nh-update-tagline">
-              Your local installation must be updated to <strong>v1.0.3</strong>. Previous builds contain critical service glitches in Network Information, OS scanning, and Phishing detection. The dashboard is paused until you download the update.
-            </p>
-
-            <div className="nh-update-highlights">
-              <p><strong>What is resolved in v1.0.3:</strong></p>
-              <ul>
-                <li>
-                  <strong>🎯 Nmap Target Device Recon:</strong> Fixed Network Information! Now scans LAN target devices for exact <u>OS Model &amp; Fingerprint</u>, device name, and MAC vendor instead of local machine info.
-                </li>
-                <li>
-                  <strong>📡 UDP Port Scanner (-sU):</strong> Scans open UDP ports with service mapping.
-                </li>
-                <li>
-                  <strong>⚠️ LAN Caution Warning:</strong> Safety reminder that target devices must reside on your local subnet.
-                </li>
-                <li>
-                  <strong>🛡️ Upgraded Phishing Engine:</strong> High-risk brand impersonation on paths/subdomains now flagged accurately.
-                </li>
-              </ul>
-            </div>
-
-            <div className="nh-update-warning-box">
-              <AlertTriangle size={18} color="#ffb84d" />
-              <span>
-                To ensure security operations and scans are accurate, please download the updated release.
-              </span>
-            </div>
-
-            <div className="nh-update-modal-actions">
-              <button
-                className="nh-btn-primary-update"
-                onClick={handleOpenCloudServer}
-              >
-                <Play size={17} /> OPEN IN LIVE CLOUD SERVER (ALWAYS PATCHED)
-              </button>
-              <button
-                className="nh-btn-secondary-update"
-                onClick={handleDownloadUpdate}
-              >
-                <Download size={15} /> Download Offline v1.0.3
-              </button>
-              <button
-                className="nh-btn-secondary-update"
-                onClick={handleAcknowledgeUpdate}
-                style={{ background: "transparent", border: "1px dashed rgba(255,255,255,0.2)" }}
-              >
-                Continue with Local &rarr;
-              </button>
-            </div>
-
-            <div className="nh-update-quick-commands">
-              <small>Linux / Termux quick update command:</small>
-              <code>cd ~/.local/share/NightHunter/app &amp;&amp; git pull origin main</code>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PATCH NOTES MODAL (ACCESSIBLE FROM CLOUD DASHBOARD) */}
-      {showPatchNotes && (
-        <div className="nh-update-modal-backdrop" role="dialog" aria-modal="true">
-          <div className="nh-update-modal-card">
-            <div className="nh-update-badge-row">
-              <span className="nh-update-pill">
-                <Sparkles size={14} /> LIVE PATCH v1.0.3
-              </span>
-              <button
-                className="nh-modal-close-btn"
-                onClick={() => setShowPatchNotes(false)}
-                aria-label="Close patch notes"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <h2>What's New in Night Hunter v1.0.3</h2>
-            <p className="nh-update-tagline">
-              This dashboard runs directly on the live server. Every patch and update is automatically active for all users without manual downloading.
-            </p>
-
-            <div className="nh-update-highlights">
-              <p><strong>Resolved in this release:</strong></p>
-              <ul>
-                <li>
-                  <strong>🎯 Nmap Target Device Recon:</strong> Scans target IPs on your local LAN for exact <u>OS Model &amp; Fingerprint</u>, device name, and MAC hardware vendor.
-                </li>
-                <li>
-                  <strong>📡 UDP Port Scanner (-sU):</strong> Scans open UDP ports with service mapping.
-                </li>
-                <li>
-                  <strong>⚠️ LAN Caution Notice:</strong> Guidance for local subnet targeting.
-                </li>
-                <li>
-                  <strong>🛡️ Phishing Threat Engine:</strong> High/Critical threat classification for brand impersonation and suspicious paths.
-                </li>
-              </ul>
-            </div>
-
-            <div className="nh-update-modal-actions">
-              <button
-                className="nh-btn-primary-update"
-                onClick={() => setShowPatchNotes(false)}
-              >
-                Continue to Dashboard &rarr;
-              </button>
-              <a
-                href="/landing#downloads"
-                className="nh-btn-secondary-update"
-              >
-                <Download size={15} /> Get Offline Packages
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="dashboard-update-bar">
         <Sparkles size={16} color="#ffd480" />
         {isLocal ? (
           <>
-            <span><strong>Local Machine Build:</strong> You are running locally. Run directly on the live cloud server for instant automatic patches!</span>
-            <a href="https://night-hunter-f2w4.onrender.com/app" className="btn-dash-update">Open Live Cloud Server &rarr;</a>
+            <span><strong>Local Machine Build:</strong> You are running locally. Use the notification bell in the top right corner to switch directly to the live server!</span>
+            <a href="https://night-hunter-f2w4.onrender.com/app" className="btn-dash-update">Switch to Cloud Server &rarr;</a>
           </>
         ) : (
           <>
-            <span><strong>Night Hunter Cloud Engine (v1.0.3 Live):</strong> Direct server execution active. All patches and threat updates live!</span>
-            <button onClick={() => setShowPatchNotes(true)} className="btn-dash-update">What's New in v1.0.3 &rarr;</button>
+            <span><strong>Night Hunter Live Cloud Engine:</strong> Running directly on the server. All v1.0.3 patches and security modules live!</span>
+            <button onClick={() => setShowNotifications(true)} className="btn-dash-update">System Notification (v1.0.3) &rarr;</button>
           </>
         )}
       </div>
@@ -807,7 +658,88 @@ function App() {
             {isLocal ? "LOCAL ENGINE" : "CLOUD SERVER ONLINE"}
           </div>
           <a href="/landing" className="nav-site-link">Website &amp; Docs</a>
-          <button className="icon-button" onClick={() => setTerminalLines((oldLines) => [...oldLines, "[!] No new security notifications."])} aria-label="Notifications"><Bell size={19} /></button>
+
+          {/* NOTIFICATION BELL WITH UPDATE NOTICE */}
+          <div className="notification-bell-container">
+            <button
+              className={`icon-button ${hasUnreadNotification ? "has-unread-notif" : ""}`}
+              onClick={() => {
+                setShowNotifications((prev) => !prev);
+                setHasUnreadNotification(false);
+                sessionStorage.setItem("nh_notif_v103_read", "true");
+              }}
+              aria-label="System Notifications"
+              title="System Notifications"
+            >
+              <Bell size={19} />
+              {hasUnreadNotification && <span className="notification-pulse-dot" />}
+            </button>
+
+            {showNotifications && (
+              <div className="notification-dropdown-panel" role="region" aria-label="Notifications list">
+                <div className="notif-dropdown-header">
+                  <div className="notif-header-title">
+                    <Bell size={15} color="#fa37c3" />
+                    <strong>SYSTEM NOTIFICATIONS</strong>
+                  </div>
+                  <button
+                    className="notif-close-btn"
+                    onClick={() => setShowNotifications(false)}
+                    aria-label="Close"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+
+                <div className="notif-dropdown-body">
+                  <div className="notif-card-update">
+                    <div className="notif-badge-row">
+                      <span className="notif-pill">
+                        <Sparkles size={11} /> UPDATE AVAILABLE (v1.0.3)
+                      </span>
+                      <span className="notif-time-tag">New</span>
+                    </div>
+
+                    <h4>Critical Version 1.0.3 Released</h4>
+                    <p className="notif-description">
+                      {isLocal
+                        ? "You are currently running Night Hunter on your local machine (localhost). Update now or switch directly to the live cloud server where all patches and modules are automatically up-to-date!"
+                        : "Night Hunter v1.0.3 is live on the cloud server. Target device OS fingerprinting, UDP port scan (-sU), and threat detection upgrades are active."}
+                    </p>
+
+                    <div className="notif-changelog">
+                      <p><strong>Resolved in this update:</strong></p>
+                      <ul>
+                        <li><strong>🎯 Target Nmap Recon:</strong> Scans target IPs on LAN for exact OS model, fingerprint &amp; MAC vendor.</li>
+                        <li><strong>📡 UDP Port Scanner (-sU):</strong> Scans open UDP ports with service mapping.</li>
+                        <li><strong>🛡️ Phishing Engine:</strong> High/Critical threat classification for brand spoofing.</li>
+                        <li><strong>⚠️ LAN Safety Guidelines:</strong> Prominent caution for local network testing.</li>
+                      </ul>
+                    </div>
+
+                    <div className="notif-actions">
+                      {isLocal && (
+                        <a
+                          href="https://night-hunter-f2w4.onrender.com/app"
+                          className="notif-btn-switch-server"
+                          onClick={() => setShowNotifications(false)}
+                        >
+                          <Zap size={14} /> Update &amp; Switch to Live Server &rarr;
+                        </a>
+                      )}
+                      <a
+                        href="https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe"
+                        className="notif-btn-download"
+                      >
+                        <Download size={13} /> Download Offline Package (v1.0.3)
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button className="icon-button" onClick={() => openPage("Settings")} aria-label="Open settings"><Settings size={19} /></button>
         </div>
       </header>
