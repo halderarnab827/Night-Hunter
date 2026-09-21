@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Play,
   RotateCcw,
+  Sparkles,
 } from "lucide-react";
 
 import "./App.css";
@@ -616,6 +617,11 @@ function App() {
 
   return (
     <div className="night-hunter">
+      <div className="dashboard-update-bar">
+        <Sparkles size={16} color="#ffd480" />
+        <span><strong>Night Hunter v1.0.3 Update Available:</strong> Nmap target reconnaissance, UDP -sU port scan, and threat engine updates.</span>
+        <a href="https://night-hunter-f2w4.onrender.com/#downloads" target="_blank" rel="noreferrer" className="btn-dash-update">Update v1.0.3 &rarr;</a>
+      </div>
       <header className="app-header">
         <button className="header-brand" type="button" onClick={resetDashboard}>
           <img className="header-logo-image" src="/night-hunter-logo.jpeg" alt="Night Hunter" />

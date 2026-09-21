@@ -286,6 +286,8 @@ def main():
 
         print()
         show_banner()
+        print("          NIGHT HUNTER v1.0.3 · STABLE DEFENSIVE OPS")
+        print("     Official Site: https://night-hunter-f2w4.onrender.com")
 
         print()
         print("[1] Web Security")

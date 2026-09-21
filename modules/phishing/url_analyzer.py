@@ -1389,6 +1389,25 @@ class PhishingAnalyzer:
         )
 
 
+
+
+        # Check if brand appears in path/query even if not in hostname
+        url_lower = self.original_url.lower()
+        path_brands = [b for b in BRAND_NAMES if b in url_lower and b not in (self.domain.lower() if self.domain else "")]
+        if path_brands:
+            sensitive_words = ["login", "signin", "verify", "account", "secure", "update", "suspended", "password", "id", "support"]
+            if any(w in url_lower for w in sensitive_words):
+                self.add_finding(
+                    "Brand Impersonation in Path",
+                    "HIGH",
+                    "Targeted brand impersonation detected in URL path",
+                    f"Brand name ({', '.join(path_brands)}) is paired with credential-harvesting keywords in the URL path.",
+                    evidence=", ".join(path_brands),
+                    recommendation="Do not enter credentials. Check the actual address bar domain.",
+                    score=40,
+                    confidence="HIGH"
+                )
+
         if not detected:
             return
 
@@ -1432,11 +1451,27 @@ class PhishingAnalyzer:
 
                 recommendation="Verify the domain ownership and official website before entering credentials.",
 
-                score=12,
+                score=45,
 
-                confidence="MEDIUM"
+                confidence="HIGH"
 
             )
+
+        url_lower = self.original_url.lower()
+        path_brands = [b for b in BRAND_NAMES if b in url_lower and b not in self.domain.lower()]
+        if path_brands and not suspicious_brands:
+            sensitive_words = ["login", "signin", "verify", "account", "secure", "update", "suspended", "password"]
+            if any(w in url_lower for w in sensitive_words):
+                self.add_finding(
+                    "Brand Impersonation in Path",
+                    "HIGH",
+                    "Targeted brand impersonation detected in URL path",
+                    f"Brand name ({', '.join(path_brands)}) is paired with credential-harvesting keywords in the URL path.",
+                    evidence=", ".join(path_brands),
+                    recommendation="Do not enter credentials. Check the actual address bar domain.",
+                    score=40,
+                    confidence="HIGH"
+                )
 
 
     # ========================================================
@@ -4098,17 +4133,17 @@ class PhishingAnalyzer:
             elif severity == "INFO":
                 info_count += 1
 
-        # Decide overall risk.
-        if critical_count > 0:
+        # Decide overall risk based on severity findings and cumulative score.
+        if critical_count > 0 or self.score >= 70:
             risk_level = "CRITICAL"
 
-        elif self.score >= 70:
+        elif high_count > 0 or self.score >= 35:
             risk_level = "HIGH"
 
-        elif self.score >= 40:
+        elif medium_count >= 2 or self.score >= 20:
             risk_level = "MEDIUM"
 
-        elif self.score >= 15:
+        elif self.score >= 10 or low_count > 0:
             risk_level = "LOW"
 
         else:

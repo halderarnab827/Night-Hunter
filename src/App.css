@@ -4422,3 +4422,27 @@ button {
     font-weight: 800;
     letter-spacing: 0.5px;
 }
+
+
+/* Dashboard Update Notice Bar */
+.dashboard-update-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 8px 20px;
+  background: linear-gradient(90deg, rgba(250, 55, 195, 0.2), rgba(120, 75, 255, 0.25));
+  border-bottom: 1px solid rgba(250, 55, 195, 0.4);
+  color: #f1edfa;
+  font-size: 12px;
+  z-index: 10;
+}
+.btn-dash-update {
+  background: linear-gradient(105deg, #fa37c3, #784bff);
+  color: #fff !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 11px;
+}
