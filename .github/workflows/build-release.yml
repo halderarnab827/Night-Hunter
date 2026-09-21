@@ -60,10 +60,6 @@ jobs:
             releases/night-hunter-termux.zip
 
   release:
-    # Direct downloads are served by the verified Render release endpoint.
-    # GitHub Release publishing is optional because it requires a repository
-    # setting that grants Actions write access to repository contents.
-    if: vars.PUBLISH_GITHUB_RELEASES == 'true'
     needs: [windows, linux-and-termux]
     runs-on: ubuntu-latest
     steps:
@@ -72,9 +68,10 @@ jobs:
         with:
           path: release-files
       - name: Publish GitHub Release
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           gh release delete "$TAG" --yes || true
-          gh release create "$TAG" release-files/windows-download/NightHunter.exe release-files/terminal-downloads/night-hunter-linux.tar.gz release-files/terminal-downloads/night-hunter-termux.zip --title "Night Hunter $TAG" --generate-notes --clobber
+          gh release create "$TAG" release-files/windows-download/NightHunter.exe release-files/terminal-downloads/night-hunter-linux.tar.gz release-files/terminal-downloads/night-hunter-termux.zip --title "Night Hunter $TAG" --generate-notes --clobber || echo "Notice: GitHub release publishing requires Actions write permission under Settings > Actions > General > Workflow permissions."

@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/halderarnab827/Night-Hunter/releases"><img src="https://img.shields.io/github/v/release/halderarnab827/Night-Hunter?color=f24fcf&style=for-the-badge&logo=github" alt="GitHub release" /></a>
+  <a href="https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe"><img src="https://img.shields.io/badge/Release-v1.6.2-f24fcf?style=for-the-badge&logo=github" alt="Release v1.6.2" /></a>
   <a href="https://night-hunter-f2w4.onrender.com"><img src="https://img.shields.io/badge/Live_Cloud_App-Online-4ade80?style=for-the-badge&logo=render" alt="Live Cloud Demo" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License: MIT" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20Android-8b5cf6?style=for-the-badge" alt="Platforms" /></a>
@@ -28,7 +28,17 @@ Night Hunter operates in two complementary modes:
 2. **Terminal CLI Engine**: A command-line toolkit tailored for headless Linux servers, Kali Linux, and Android Termux environments.
 
 🌐 **Official Live Web Application:** [night-hunter-f2w4.onrender.com](https://night-hunter-f2w4.onrender.com)  
-📦 **Official GitHub Releases:** [Releases Page](https://github.com/halderarnab827/Night-Hunter/releases)
+📦 **Official GitHub Releases:** [Releases Directory](https://github.com/halderarnab827/Night-Hunter/tree/main/releases)
+
+---
+
+## 📥 Latest Downloads (v1.6.2)
+
+| Platform | Package | GitHub Direct Link | Web Mirror Link | Verified SHA-256 |
+|---|---|---|---|---|
+| **Windows 10 / 11** | Standalone Executable (`.exe`) | [**NightHunter.exe**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe) | `03e389104b...` |
+| **Linux (Kali/Ubuntu)** | Terminal Edition (`.tar.gz`) | [**night-hunter-linux.tar.gz**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-linux.tar.gz) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-linux.tar.gz) | `e17b5acc...` |
+| **Android (Termux)** | Mobile Terminal (`.zip`) | [**night-hunter-termux.zip**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-termux.zip) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-termux.zip) | `1c194cec...` |
 
 ---
 
@@ -68,7 +78,7 @@ Night Hunter operates in two complementary modes:
 ## 🚀 Quick Start & Installation
 
 ### Option 1: Windows (Standalone .exe — Direct Application)
-1. Download **[`NightHunter.exe`](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe)**.
+1. Download **[`NightHunter.exe`](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe)** (or from [Web Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe)).
 2. Double-click `NightHunter.exe` to run.
    > *Note: Windows SmartScreen may show "Windows protected your PC" because this is an open-source binary without an expensive commercial EV certificate. Click **"More info"** &rarr; **"Run anyway"**.*
 3. Your browser automatically opens the dashboard at `http://127.0.0.1:5000`.
@@ -79,8 +89,8 @@ Night Hunter operates in two complementary modes:
 Run the following in your terminal:
 
 ```bash
-# 1. Download release archive
-wget https://night-hunter-f2w4.onrender.com/downloads/night-hunter-linux.tar.gz
+# 1. Download release archive (from GitHub or Web Mirror)
+wget https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-linux.tar.gz
 
 # 2. Extract archive
 tar -xzf night-hunter-linux.tar.gz
@@ -103,7 +113,7 @@ Turn your Android smartphone into a portable defensive audit device:
 cd ~/storage/downloads
 
 # 2. Download and unzip
-curl -LO https://night-hunter-f2w4.onrender.com/downloads/night-hunter-termux.zip
+curl -LO https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-termux.zip
 unzip night-hunter-termux.zip
 cd night-hunter-termux
 
