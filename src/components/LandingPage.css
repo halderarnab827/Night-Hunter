@@ -226,3 +226,115 @@
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* Why Night Hunter Value Showcase */
+.why-hunter-section {
+  padding: 100px clamp(24px, 10vw, 155px);
+  background: radial-gradient(circle at 50% 0%, rgba(120, 75, 255, 0.08) 0%, #0a0714 70%);
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+
+.why-hunter-header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 56px;
+}
+
+.why-hunter-header .landing-eyebrow {
+  justify-content: center;
+}
+
+.why-hunter-header h2 {
+  font-size: clamp(30px, 4.5vw, 44px);
+  color: #fff;
+  line-height: 1.15;
+  margin: 14px 0 16px;
+}
+
+.why-hunter-header h2 em {
+  color: #fa37c3;
+  font-style: normal;
+}
+
+.why-hunter-subtitle {
+  color: #a89cb5;
+  font-size: clamp(15px, 1.8vw, 17px);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.why-hunter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.why-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.why-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(250, 55, 195, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.why-card.highlight-card {
+  border-color: rgba(250, 55, 195, 0.35);
+  background: linear-gradient(145deg, rgba(250, 55, 195, 0.06), rgba(120, 75, 255, 0.03));
+}
+
+.why-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.why-badge {
+  font: 700 11px 'DM Mono', monospace;
+  letter-spacing: 0.12em;
+  color: #fa37c3;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.why-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+.why-card p {
+  color: #aaa0b4;
+  font-size: 13.5px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.why-card p strong {
+  color: #fff;
+}
+
+.why-card code {
+  color: #79ffa8;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+}

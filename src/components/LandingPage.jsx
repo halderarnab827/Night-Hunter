@@ -4,7 +4,9 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
+  Cpu,
   Download,
+  FileText,
   Globe2,
   KeyRound,
   Laptop,
@@ -16,6 +18,7 @@ import {
   Terminal,
   Play,
   X,
+  Zap,
 } from "lucide-react";
 import "./LandingPage.css";
 
@@ -85,6 +88,74 @@ export default function LandingPage() {
             <article><Globe2 /><h3>Web intelligence</h3><p>Inspect security headers, endpoints, technologies, and defensive recommendations.</p></article>
             <article><Network /><h3>Nmap Network Recon</h3><p>Scan target devices on your LAN for OS models, device names, MAC vendors, and TCP/UDP ports.</p></article>
             <article><KeyRound /><h3>Identity &amp; Threat Detection</h3><p>Analyze password strength, inspect suspicious phishing links, and compare cryptographic outputs.</p></article>
+          </div>
+        </section>
+
+        {/* WHY NIGHT HUNTER - VALUE SHOWCASE */}
+        <section className="why-hunter-section">
+          <div className="why-hunter-header">
+            <p className="landing-eyebrow"><span /> WHY ETHICAL HACKERS &amp; SYSADMINS CHOOSE NIGHT HUNTER</p>
+            <h2>Stop Juggling Broken Tools.<br /><em>Defend Your Perimeter Smarter.</em></h2>
+            <p className="why-hunter-subtitle">
+              Most security tools do one thing in isolation or output fake toy data. Night Hunter gives you genuine low-level reconnaissance, passive threat analysis, and zero-setup deployment.
+            </p>
+          </div>
+
+          <div className="why-hunter-grid">
+            <article className="why-card highlight-card">
+              <div className="why-icon-wrap" style={{ color: "#fa37c3", background: "rgba(250, 55, 195, 0.12)" }}>
+                <Cpu size={24} />
+              </div>
+              <span className="why-badge">REAL HARDWARE SCANNING</span>
+              <h3>100% Real Engines — Zero Fake Mock Data</h3>
+              <p>
+                Unlike toy tools that display simulated progress bars, Night Hunter executes real socket operations and native <strong>Nmap 7.99</strong> commands under the hood. It accurately fingerprints exact OS versions, discovers active UDP services (<code>-sU</code>), and tests live TLS 1.3 handshakes.
+              </p>
+            </article>
+
+            <article className="why-card">
+              <div className="why-icon-wrap" style={{ color: "#79ffa8", background: "rgba(121, 255, 168, 0.12)" }}>
+                <Zap size={24} />
+              </div>
+              <span className="why-badge">UNIFIED DEFENSE</span>
+              <h3>Single Pane of Glass Defense</h3>
+              <p>
+                Quit opening 5 separate terminal windows for Nmap, CyberChef, browser devtools, and Python scripts. Audit web application headers, scan local LAN subnets, inspect phishing threats, and compute hashes from one unified cyberpunk dashboard.
+              </p>
+            </article>
+
+            <article className="why-card">
+              <div className="why-icon-wrap" style={{ color: "#ffd480", background: "rgba(255, 212, 128, 0.12)" }}>
+                <ShieldCheck size={24} />
+              </div>
+              <span className="why-badge">SAFE BY DESIGN</span>
+              <h3>Zero-Risk Passive Phishing Inspection</h3>
+              <p>
+                Investigate reported phishing links without executing malware or alerting the attacker. Night Hunter's heuristic parser flags IDN homoglyphs, deceptive redirects, and brand spoofing 100% passively without downloading remote payloads.
+              </p>
+            </article>
+
+            <article className="why-card">
+              <div className="why-icon-wrap" style={{ color: "#38bdf8", background: "rgba(56, 189, 248, 0.12)" }}>
+                <Laptop size={24} />
+              </div>
+              <span className="why-badge">ZERO SETUP</span>
+              <h3>True Tri-Platform Portability</h3>
+              <p>
+                No Python virtualenv hell or dependency conflicts. Run the portable <strong>NightHunter.exe</strong> directly on Windows with one click, run headless on Kali Linux with one terminal command, or audit on the go using Android Termux.
+              </p>
+            </article>
+
+            <article className="why-card">
+              <div className="why-icon-wrap" style={{ color: "#c084fc", background: "rgba(192, 132, 252, 0.12)" }}>
+                <FileText size={24} />
+              </div>
+              <span className="why-badge">AUDIT READY</span>
+              <h3>Instant Client-Ready Reports (HTML · JSON · TXT)</h3>
+              <p>
+                Turn technical findings into polished, visual HTML executive reports with charts, or export clean JSON for automated SIEM and CI/CD pipelines. Never write audit documentation by hand again.
+              </p>
+            </article>
           </div>
         </section>
 

@@ -36,9 +36,21 @@ Night Hunter operates in two complementary modes:
 
 | Platform | Package | GitHub Direct Link | Web Mirror Link | Verified SHA-256 |
 |---|---|---|---|---|
-| **Windows 10 / 11** | Standalone Executable (`.exe`) | [**NightHunter.exe**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe) | `03e389104b...` |
-| **Linux (Kali/Ubuntu)** | Terminal Edition (`.tar.gz`) | [**night-hunter-linux.tar.gz**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-linux.tar.gz) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-linux.tar.gz) | `e17b5acc...` |
-| **Android (Termux)** | Mobile Terminal (`.zip`) | [**night-hunter-termux.zip**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-termux.zip) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-termux.zip) | `1c194cec...` |
+| **Windows 10 / 11** | Standalone Executable (`.exe`) | [**NightHunter.exe**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe) | `338b25f6...` |
+| **Linux (Kali/Ubuntu)** | Terminal Edition (`.tar.gz`) | [**night-hunter-linux.tar.gz**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-linux.tar.gz) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-linux.tar.gz) | `5a33674c...` |
+| **Android (Termux)** | Mobile Terminal (`.zip`) | [**night-hunter-termux.zip**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-termux.zip) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-termux.zip) | `5c9c9a03...` |
+
+---
+
+## 💎 Why Night Hunter? (Built for Real Security Operations)
+
+| Feature | The Old Way (Fragmented Tools) | The Night Hunter Advantage |
+|---|---|---|
+| **🎯 Accuracy** | Simulated progress bars & toy data | **100% Real Hardware Scans** via native sockets & Nmap 7.99 with exact OS fingerprinting |
+| **⚡ Workflow** | Juggling 5 terminal windows (Nmap, DevTools, CyberChef) | **Unified Single Pane of Glass** combining Web, LAN, Phishing, Passwords & Crypto |
+| **🛡️ Phishing Safety** | Risky remote page fetching that can execute malware | **Zero-Risk Passive Inspection** identifying homoglyphs & brand spoofs without connecting |
+| **💻 Portability** | Complex Python venvs, pip breakages & missing C tools | **Single-file `.exe` on Windows**, 1-command installer on Kali, or Android Termux on the go |
+| **📑 Reporting** | Hours spent writing manual markdown & taking screenshots | **1-Click Multi-Format Reports** in client-ready HTML, machine-readable JSON, & TXT |
 
 ---
 
