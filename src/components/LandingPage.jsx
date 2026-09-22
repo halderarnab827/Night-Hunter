@@ -25,9 +25,10 @@ import "./LandingPage.css";
 const releaseBase = "https://night-hunter-f2w4.onrender.com/#downloads";
 
 const downloads = [
-  { icon: Laptop, name: "Windows (v1.6.2)", detail: "Local dashboard + Nmap workspace", href: "/downloads/NightHunter.exe", action: "Download for Windows" },
-  { icon: Terminal, name: "Linux (v1.6.2)", detail: "Local Nmap edition · .tar.gz", href: "/downloads/night-hunter-linux.tar.gz", action: "Download for Linux" },
-  { icon: Smartphone, name: "Termux (v1.6.2)", detail: "Local Nmap edition · .zip", href: "/downloads/night-hunter-termux.zip", action: "Download for Termux" },
+  { icon: Laptop, name: "Windows Standalone (.exe)", detail: "Single-click executable · (14.6 MB)", href: "/downloads/NightHunter.exe", action: "Download .exe" },
+  { icon: Laptop, name: "Windows Portable (.zip)", detail: "Clean zero-warning package · Extract & run", href: "/downloads/night-hunter-windows.zip", action: "Download .zip" },
+  { icon: Terminal, name: "Linux (Kali / Ubuntu)", detail: "Terminal edition · .tar.gz", href: "/downloads/night-hunter-linux.tar.gz", action: "Download for Linux" },
+  { icon: Smartphone, name: "Termux (Android)", detail: "Local Nmap edition · .zip", href: "/downloads/night-hunter-termux.zip", action: "Download for Termux" },
 ];
 
 export default function LandingPage() {
@@ -192,12 +193,14 @@ export default function LandingPage() {
             <li>
               <b>WINDOWS</b>
               <span>
-                <strong>Windows 10 / 11 Setup &amp; Safety Verification</strong>
-                <small>1. Click <b>"Download for Windows"</b> to get <code>NightHunter.exe</code>.</small>
-                <small>2. Double-click the file to open.</small>
-                <small style={{ marginTop: '6px', background: 'rgba(255,255,255,0.06)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #f24fcf' }}>
-                  <b style={{ color: '#fff' }}>Windows SmartScreen Note:</b> Because Night Hunter is an open-source project without a costly enterprise signing certificate, Windows Defender may show <em>"Windows protected your PC"</em>.
-                  <br />&rarr; Click <b>"More info"</b> and then <b>"Run anyway"</b>.
+                <strong>Windows 10 / 11 Setup &amp; Browser Safety Note</strong>
+                <small>• <b>Option A (Zero Warnings · Recommended):</b> Download <b>Windows Portable (.zip)</b>, extract the folder, and double-click <code>start_night_hunter.bat</code>.</small>
+                <small>• <b>Option B (Single File):</b> Download <code>NightHunter.exe</code> and double-click to launch.</small>
+                <small style={{ marginTop: '8px', background: 'rgba(255, 170, 0, 0.08)', padding: '10px 14px', borderRadius: '6px', borderLeft: '3px solid #ffd280', color: '#ffd280', display: 'block', lineHeight: '1.6' }}>
+                  <b style={{ color: '#fff' }}>Why Chrome or Defender flags "Virus detected" / "Dangerous file":</b><br />
+                  This is a standard <em>False Positive</em> common to all open-source security tools compiled with Python. Night Hunter includes low-level socket scanners and is not signed with an expensive ($500/year) Microsoft enterprise certificate.
+                  <br />&bull; <b>In Google Chrome:</b> Press <kbd style={{ background: '#222', padding: '1px 5px', borderRadius: '3px', color: '#fff' }}>Ctrl + J</kbd> (Downloads) &rarr; Click <b>"Download suspicious file"</b> or <b>"Keep anyway"</b>.
+                  <br />&bull; <b>In Windows SmartScreen:</b> Click <b>"More info"</b> &rarr; Click <b>"Run anyway"</b>.
                 </small>
                 <small style={{ color: '#dd9dff', marginTop: '6px' }}>&#10003; The local engine starts and automatically opens your dashboard at <code>http://127.0.0.1:5000</code>.</small>
               </span>

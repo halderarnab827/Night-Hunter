@@ -36,7 +36,8 @@ Night Hunter operates in two complementary modes:
 
 | Platform | Package | GitHub Direct Link | Web Mirror Link | Verified SHA-256 |
 |---|---|---|---|---|
-| **Windows 10 / 11** | Standalone Executable (`.exe`) | [**NightHunter.exe**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe) | `338b25f6...` |
+| **Windows (Portable)** | Clean Package · Zero Warnings (`.zip`) | [**night-hunter-windows.zip**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-windows.zip) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-windows.zip) | Verified Archive |
+| **Windows (Standalone)** | Single Executable (`.exe`) | [**NightHunter.exe**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe) | `338b25f6...` |
 | **Linux (Kali/Ubuntu)** | Terminal Edition (`.tar.gz`) | [**night-hunter-linux.tar.gz**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-linux.tar.gz) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-linux.tar.gz) | `5a33674c...` |
 | **Android (Termux)** | Mobile Terminal (`.zip`) | [**night-hunter-termux.zip**](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-termux.zip) | [Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-termux.zip) | `5c9c9a03...` |
 
@@ -89,11 +90,22 @@ Night Hunter operates in two complementary modes:
 
 ## 🚀 Quick Start & Installation
 
-### Option 1: Windows (Standalone .exe — Direct Application)
-1. Download **[`NightHunter.exe`](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe)** (or from [Web Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe)).
-2. Double-click `NightHunter.exe` to run.
-   > *Note: Windows SmartScreen may show "Windows protected your PC" because this is an open-source binary without an expensive commercial EV certificate. Click **"More info"** &rarr; **"Run anyway"**.*
-3. Your browser automatically opens the dashboard at `http://127.0.0.1:5000`.
+### Option 1: Windows (Zero-Warning Portable or Single .exe)
+
+#### Recommended (Zero Browser Warnings):
+1. Download **[`night-hunter-windows.zip`](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/night-hunter-windows.zip)** (or [Web Mirror](https://night-hunter-f2w4.onrender.com/downloads/night-hunter-windows.zip)).
+2. Extract the folder and double-click `start_night_hunter.bat`.
+
+#### Standalone Executable (.exe):
+1. Download **[`NightHunter.exe`](https://github.com/halderarnab827/Night-Hunter/raw/main/releases/NightHunter.exe)** (or [Web Mirror](https://night-hunter-f2w4.onrender.com/downloads/NightHunter.exe)).
+2. Double-click `NightHunter.exe` to launch.
+
+> [!NOTE]
+> **Why Chrome or Windows Defender flags "Virus detected" / "Dangerous file":**  
+> This is a known **False Positive** common to open-source Python security tools. Because Night Hunter performs raw socket scans and is an open-source project without a costly enterprise EV signing certificate ($500/year), Google Chrome Safe Browsing heuristics flag the generic compiled stub.
+> * **In Chrome**: Press `Ctrl + J` (Downloads) &rarr; Click **"Download suspicious file"** or **"Keep anyway"**.
+> * **In SmartScreen**: Click **"More info"** &rarr; **"Run anyway"**.
+> * Your browser automatically opens the dashboard at `http://127.0.0.1:5000`.
 
 ---
 
