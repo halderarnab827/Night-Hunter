@@ -12,7 +12,7 @@ pkg install -y python nmap
 rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR"
 
-for item in api core modules utils main.py requirement.txt; do
+for item in api core modules utils dist main.py desktop_launcher.py requirement.txt README.md USER_GUIDE.md; do
   cp -R "$SOURCE_DIR/$item" "$APP_DIR/"
 done
 

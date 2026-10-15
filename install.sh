@@ -27,7 +27,7 @@ mkdir -p "$APP_DIR" "$BIN_DIR"
 rm -rf "$APP_DIR/app"
 mkdir -p "$APP_DIR/app"
 
-for item in api core modules utils main.py requirement.txt; do
+for item in api core modules utils dist main.py desktop_launcher.py requirement.txt README.md USER_GUIDE.md; do
   if [ -e "$SOURCE_DIR/$item" ]; then
     cp -R "$SOURCE_DIR/$item" "$APP_DIR/app/"
   fi
@@ -90,7 +90,8 @@ echo "   Night Hunter installed successfully!"
 echo "============================================================"
 echo
 echo "Start it with either:"
-echo "    NightHunter"
+echo "    NightHunter          (Launches Web Dashboard & opens browser)"
+echo "    NightHunter --cli    (Runs in terminal CLI mode)"
 echo "or:"
 echo "    nighthunter"
 echo
