@@ -31,6 +31,7 @@
 import base64
 import hashlib
 import hmac
+import json
 import math
 import re
 import secrets
@@ -347,6 +348,25 @@ def base64_decode(encoded_text):
         )
 
 
+def base32_encode(text):
+    """Encode UTF-8 text as RFC 4648 Base32."""
+    if text is None:
+        raise ValueError("Text cannot be None.")
+    return base64.b32encode(str(text).encode("utf-8")).decode("ascii")
+
+
+def base32_decode(encoded_text):
+    """Decode RFC 4648 Base32 into UTF-8 text."""
+    if encoded_text is None:
+        raise ValueError("Base32 text cannot be None.")
+    try:
+        normalized = str(encoded_text).strip().upper()
+        normalized += "=" * ((8 - len(normalized) % 8) % 8)
+        return base64.b32decode(normalized, casefold=True).decode("utf-8", errors="replace")
+    except (ValueError, UnicodeError) as error:
+        raise ValueError(f"Invalid Base32 data: {error}")
+
+
 # ============================================================
 # HEX
 # ============================================================
@@ -395,6 +415,23 @@ def hex_decode(hex_text):
         raise ValueError(
             f"Invalid hexadecimal data: {error}"
         )
+
+
+def binary_encode(text):
+    """Represent UTF-8 bytes as readable eight-bit binary groups."""
+    if text is None:
+        raise ValueError("Text cannot be None.")
+    return " ".join(f"{byte:08b}" for byte in str(text).encode("utf-8"))
+
+
+def binary_decode(binary_text):
+    """Decode space-separated (or continuous) eight-bit binary into UTF-8 text."""
+    if binary_text is None:
+        raise ValueError("Binary text cannot be None.")
+    compact = re.sub(r"\s+", "", str(binary_text))
+    if not compact or len(compact) % 8 or re.search(r"[^01]", compact):
+        raise ValueError("Binary data must contain complete groups of eight 0/1 bits.")
+    return bytes(int(compact[index:index + 8], 2) for index in range(0, len(compact), 8)).decode("utf-8", errors="replace")
 
 
 # ============================================================
@@ -541,6 +578,31 @@ def caesar_decrypt(text, shift=3):
         text,
         -int(shift)
     )
+
+
+def inspect_jwt(token):
+    """Decode a JWT's public header and payload without verifying its signature.
+
+    JWT decoding is an inspection aid only.  It does not establish that a token
+    is trusted or valid.
+    """
+    parts = str(token).strip().split(".")
+    if len(parts) != 3:
+        raise ValueError("A JWT must contain exactly three dot-separated segments.")
+
+    def decode_segment(segment):
+        padded = segment + "=" * ((4 - len(segment) % 4) % 4)
+        try:
+            return json.loads(base64.urlsafe_b64decode(padded.encode("ascii")).decode("utf-8"))
+        except (ValueError, UnicodeError, json.JSONDecodeError) as error:
+            raise ValueError(f"Invalid JWT segment: {error}")
+
+    return {
+        "header": decode_segment(parts[0]),
+        "payload": decode_segment(parts[1]),
+        "signature_present": bool(parts[2]),
+        "warning": "Decoded only. The signature was NOT verified; do not trust claims until verified by the issuing service.",
+    }
 
 
 # ============================================================

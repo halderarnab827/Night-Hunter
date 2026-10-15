@@ -40,6 +40,117 @@ def remember_activity(module, target, status, summary, output=None):
         print(f"[!] Could not save activity history: {error}")
 
 
+def analyze_scam_message(text_content):
+    """Return a transparent, local heuristic assessment of pasted scam text.
+
+    This deliberately does not send the message to a third party.  A match is a
+    warning signal, not proof that a sender is malicious.
+    """
+    normalized = re.sub(r"\s+", " ", text_content.lower())
+    signal_definitions = [
+        ("Credential or OTP request", 28, [
+            "one time password", "one-time password", "verification code", "share your otp",
+            "send otp", "enter otp", "cvv", "pin number", "seed phrase", "recovery phrase"
+        ]),
+        ("Urgency or pressure", 16, [
+            "urgent", "immediately", "act now", "within 24", "last warning", "expires today",
+            "limited time", "do not ignore", "final notice"
+        ]),
+        ("Account or identity threat", 18, [
+            "account suspended", "account locked", "account restricted", "verify your account",
+            "unusual activity", "unrecognized login", "identity verification"
+        ]),
+        ("Payment or refund lure", 16, [
+            "payment failed", "refund", "unpaid invoice", "unusual charge", "processing fee",
+            "pay now", "bank transfer", "upi", "wallet address"
+        ]),
+        ("Delivery or prize lure", 12, [
+            "parcel", "package", "delivery failed", "customs fee", "you have won", "claim prize"
+        ]),
+        ("Crypto or investment scam indicator", 20, [
+            "guaranteed return", "double your money", "airdrop", "connect wallet", "crypto giveaway",
+            "investment opportunity", "trading signal"
+        ]),
+        ("Impersonation language", 12, [
+            "customer support", "bank security team", "tax department", "police department",
+            "microsoft support", "official representative"
+        ]),
+        ("Off-platform contact request", 10, [
+            "contact us on whatsapp", "message on telegram", "call this number", "contact agent"
+        ]),
+    ]
+
+    patterns = []
+    score = 0
+    for category, weight, phrases in signal_definitions:
+        matched = [phrase for phrase in phrases if phrase in normalized]
+        if matched:
+            patterns.append({
+                "category": category,
+                "keywords": matched,
+                "weight": weight,
+            })
+            score += weight
+
+    found_urls = re.findall(r"(?:https?://|www\.)[^\s<>\"']+", text_content, flags=re.IGNORECASE)
+    found_urls = [url.rstrip(".,;:!?)]") for url in found_urls]
+    shortened_urls = [url for url in found_urls if re.search(r"(?:bit\.ly|tinyurl\.com|t\.co|shorturl\.at)/", url, re.I)]
+    if shortened_urls:
+        patterns.append({
+            "category": "Shortened link", "keywords": shortened_urls[:3], "weight": 12,
+        })
+        score += 12
+
+    phone_numbers = re.findall(r"(?<!\w)(?:\+?\d[\d\s().-]{7,}\d)(?!\w)", text_content)
+    if phone_numbers:
+        patterns.append({
+            "category": "Phone contact included", "keywords": phone_numbers[:3], "weight": 4,
+        })
+        score += 4
+
+    score = min(score, 100)
+    risk_level = "LOW" if score < 20 else "MEDIUM" if score < 45 else "HIGH" if score < 70 else "CRITICAL"
+    actions = [
+        "Do not reply, call supplied numbers, open attachments, or use links from the message.",
+        "Verify the request through the organisation's official website or a number you already trust.",
+    ]
+    if score >= 45:
+        actions.extend([
+            "Do not share passwords, OTPs, PINs, card details, recovery phrases, or remote-access codes.",
+            "Report the message through your mail, messaging, bank, or platform reporting tools.",
+        ])
+    if score >= 70:
+        actions.append("If information was already shared, change affected passwords from the official site and contact the real provider immediately.")
+
+    url_reports = []
+    for url in found_urls[:5]:
+        try:
+            fixed_url = url if url.startswith("http") else f"https://{url}"
+            url_reports.append(PhishingAnalyzer(fixed_url, fetch_content=False).analyze())
+        except Exception:
+            continue
+
+    high_risk_links = sum(1 for report in url_reports if report.get("risk_score", 0) >= 60)
+    if high_risk_links:
+        score = min(100, score + min(25, high_risk_links * 12))
+        risk_level = "CRITICAL" if score >= 70 else "HIGH" if score >= 45 else "MEDIUM"
+
+    return {
+        "mode": "message_triage",
+        "risk_score": score,
+        "risk_level": risk_level,
+        "assessment_note": "This is a local heuristic assessment. It identifies warning signals; it does not prove fraud or sender identity.",
+        "scam_patterns": patterns,
+        # Kept for existing clients that display the older field.
+        "urgency_triggers": patterns,
+        "recommended_actions": actions,
+        "extracted_urls": found_urls,
+        "url_reports": url_reports,
+        "total_links": len(found_urls),
+        "high_risk_links": high_risk_links,
+    }
+
+
 @app.get("/api/status")
 def api_status():
 
@@ -82,6 +193,12 @@ def web_security():
             return jsonify({
                 "success": False,
                 "error": "Target URL is required."
+            }), 400
+
+        if data.get("authorized") is not True:
+            return jsonify({
+                "success": False,
+                "error": "Confirm that you own the target or have explicit permission before running an active web audit."
             }), 400
 
         if not target.startswith(
@@ -311,42 +428,13 @@ def phishing_analysis():
         target = str(data.get("target", "")).strip()
         mode = str(data.get("mode", "url")).strip()
         text_content = str(data.get("text", "")).strip()
-        if mode == "email_triage" or (not target and text_content):
-            found_urls = re.findall(r'(?:https?://|www\.)[^\s<>"\']+', text_content)
-            triggers_found = []
-            trigger_patterns = [
-                ("Account Suspension", ["suspend", "locked", "disabled", "terminated", "deactivated", "restriction"]),
-                ("Urgent Action Required", ["immediately", "urgent", "24 hours", "action required", "within 24h", "time sensitive"]),
-                ("Credential Verification", ["verify your password", "confirm password", "enter credentials", "validate account", "update login"]),
-                ("Financial Threat / Billing", ["unauthorized transaction", "wire transfer", "payment failed", "invoice attached", "unusual charge"]),
-                ("Security Alert", ["security alert", "suspicious activity", "unrecognized device", "new sign-in", "breach"]),
-            ]
-            lower_text = text_content.lower()
-            for cat, keywords in trigger_patterns:
-                matched = [kw for kw in keywords if kw in lower_text]
-                if matched:
-                    triggers_found.append({"category": cat, "keywords": matched})
-
-            url_reports = []
-            for u in found_urls[:5]:
-                fixed_u = u if u.startswith("http") else f"https://{u}"
-                try:
-                    rep = PhishingAnalyzer(fixed_u, fetch_content=False).analyze()
-                    url_reports.append(rep)
-                except Exception:
-                    pass
-
-            result = {
-                "mode": "email_triage",
-                "extracted_urls": found_urls,
-                "urgency_triggers": triggers_found,
-                "url_reports": url_reports,
-                "total_links": len(found_urls),
-                "high_risk_links": sum(1 for r in url_reports if r.get("risk_score", 0) >= 60)
-            }
+        if mode in {"email_triage", "message_triage", "sms_triage"} or (not target and text_content):
+            if not text_content:
+                return jsonify({"success": False, "error": "Paste a message, email, or SMS to analyse."}), 400
+            result = analyze_scam_message(text_content)
             remember_activity(
-                "Phishing Analyzer", f"Email triage ({len(found_urls)} link(s))", "Complete",
-                f"Extracted {len(found_urls)} link(s); {len(triggers_found)} threat trigger(s) detected.", result,
+                "Phishing Analyzer", f"Message triage ({result['total_links']} link(s))", "Complete",
+                f"Local scam triage: {result['risk_level']} risk; {len(result['scam_patterns'])} signal group(s).", result,
             )
             return jsonify({"success": True, "report": result})
 
@@ -390,11 +478,18 @@ def cryptography():
             "identify": lambda: crypto_tools.get_hash_information(text),
             "base64_encode": lambda: crypto_tools.base64_encode(text),
             "base64_decode": lambda: crypto_tools.base64_decode(text),
+            "base32_encode": lambda: crypto_tools.base32_encode(text),
+            "base32_decode": lambda: crypto_tools.base32_decode(text),
             "hex_encode": lambda: crypto_tools.hex_encode(text),
             "hex_decode": lambda: crypto_tools.hex_decode(text),
+            "binary_encode": lambda: crypto_tools.binary_encode(text),
+            "binary_decode": lambda: crypto_tools.binary_decode(text),
             "url_encode": lambda: crypto_tools.url_encode(text),
             "url_decode": lambda: crypto_tools.url_decode(text),
             "rot13": lambda: crypto_tools.rot13(text),
+            "caesar_encrypt": lambda: crypto_tools.caesar_encrypt(text, data.get("shift", 3)),
+            "caesar_decrypt": lambda: crypto_tools.caesar_decrypt(text, data.get("shift", 3)),
+            "jwt_inspect": lambda: crypto_tools.inspect_jwt(text),
             "hmac_sha256": lambda: crypto_tools.hmac_digest(text, data.get("key", "night_hunter_secret"), "sha256"),
             "hmac_sha512": lambda: crypto_tools.hmac_digest(text, data.get("key", "night_hunter_secret"), "sha512"),
         }

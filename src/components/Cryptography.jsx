@@ -41,6 +41,7 @@ export default function Cryptography() {
   // Tab 3: Encoders/Decoders State
   const [encodeInput, setEncodeInput] = useState("Hello Night Hunter");
   const [encodeOp, setEncodeOp] = useState("base64_encode");
+  const [caesarShift, setCaesarShift] = useState("3");
   const [encodeOutput, setEncodeOutput] = useState("");
   const [encodeLoading, setEncodeLoading] = useState(false);
   const [encodeError, setEncodeError] = useState("");
@@ -61,7 +62,7 @@ export default function Cryptography() {
 
   async function copy(value, label) {
     if (!value) return;
-    await navigator.clipboard.writeText(value);
+    await navigator.clipboard.writeText(typeof value === "string" ? value : JSON.stringify(value, null, 2));
     setCopiedKey(label);
     window.setTimeout(() => setCopiedKey(""), 1800);
   }
@@ -132,7 +133,7 @@ export default function Cryptography() {
       const response = await fetch("/api/cryptography", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: encodeInput, operation: encodeOp })
+        body: JSON.stringify({ text: encodeInput, operation: encodeOp, shift: caesarShift })
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || "Encoding operation failed.");
@@ -197,7 +198,7 @@ export default function Cryptography() {
             <p className="eyebrow">FLAGSHIP CRYPTOGRAPHIC SUITE</p>
             <h2>Crypto Analyst & Integrity Lab</h2>
             <p className="subtitle">
-              Format Identifier · Multi-Hash Engine · Multi-Format Encoders · CSPRNG Key Station · HMAC
+              Hash & Format Analysis · Safe Text Transforms · JWT Inspection · CSPRNG Keys · HMAC
             </p>
           </div>
         </div>
@@ -212,7 +213,7 @@ export default function Cryptography() {
         {[
           { id: "hash", label: "Multi-Hash Engine", icon: Hash },
           { id: "identify", label: "Hash Identifier & Analyst", icon: Fingerprint },
-          { id: "encode", label: "Encoders & Decoders", icon: Code },
+          { id: "encode", label: "Transforms & Token Inspector", icon: Code },
           { id: "keys", label: "CSPRNG Key Station", icon: Key },
           { id: "hmac", label: "HMAC Authentication", icon: Lock }
         ].map((tab) => {
@@ -487,21 +488,42 @@ export default function Cryptography() {
               >
                 <option value="base64_encode">Base64 Encode</option>
                 <option value="base64_decode">Base64 Decode</option>
+                <option value="base32_encode">Base32 Encode</option>
+                <option value="base32_decode">Base32 Decode</option>
                 <option value="hex_encode">Hexadecimal Encode</option>
                 <option value="hex_decode">Hexadecimal Decode</option>
+                <option value="binary_encode">Binary (8-bit) Encode</option>
+                <option value="binary_decode">Binary (8-bit) Decode</option>
                 <option value="url_encode">URL Encode (RFC 3986)</option>
                 <option value="url_decode">URL Decode</option>
                 <option value="rot13">ROT13 Cipher Transform</option>
+                <option value="caesar_encrypt">Caesar Cipher Encode (educational)</option>
+                <option value="caesar_decrypt">Caesar Cipher Decode (educational)</option>
+                <option value="jwt_inspect">JWT Header & Payload Inspector</option>
               </select>
             </label>
 
+            {(encodeOp === "caesar_encrypt" || encodeOp === "caesar_decrypt") && (
+              <label className="crypto-label" style={{ marginTop: "14px", display: "block" }}>
+                CAESAR SHIFT (1–25)
+                <input
+                  type="number"
+                  min="1"
+                  max="25"
+                  value={caesarShift}
+                  onChange={(e) => setCaesarShift(e.target.value)}
+                  style={{ width: "100%", height: "42px", background: "rgba(5, 8, 20, 0.8)", border: "1px solid rgba(120, 135, 190, 0.3)", borderRadius: "8px", color: "#7ff0ca", padding: "0 10px", fontSize: "13px", marginTop: "6px", boxSizing: "border-box" }}
+                />
+              </label>
+            )}
+
             <label className="crypto-label" style={{ marginTop: "14px", display: "block" }}>
-              INPUT TEXT
+              {encodeOp === "jwt_inspect" ? "JWT TOKEN" : "INPUT TEXT"}
               <textarea
                 rows={6}
                 value={encodeInput}
                 onChange={(e) => setEncodeInput(e.target.value)}
-                placeholder="Enter text to process..."
+                placeholder={encodeOp === "jwt_inspect" ? "Paste a three-part JWT token. It will be decoded only; its signature is not verified." : "Enter text to process..."}
                 style={{ width: "100%", background: "rgba(5, 8, 20, 0.8)", border: "1px solid rgba(120, 135, 190, 0.3)", borderRadius: "8px", color: "#e2e8f0", padding: "10px", fontSize: "13px", boxSizing: "border-box", marginTop: "6px" }}
               />
             </label>
@@ -544,7 +566,7 @@ export default function Cryptography() {
             {encodeOutput ? (
               <div style={{ background: "rgba(0,0,0,0.5)", padding: "16px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <code style={{ color: "#7ff0ca", wordBreak: "break-all", fontSize: "13px", display: "block", whiteSpace: "pre-wrap" }}>
-                  {encodeOutput}
+                  {typeof encodeOutput === "string" ? encodeOutput : JSON.stringify(encodeOutput, null, 2)}
                 </code>
               </div>
             ) : (
@@ -579,8 +601,8 @@ export default function Cryptography() {
             {generatedKeys ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {[
-                  { label: "AES-256 Symmetric Key (Hex 32-Byte)", value: generatedKeys.aes256_hex, key: "aes256" },
-                  { label: "AES-128 Symmetric Key (Hex 16-Byte)", value: generatedKeys.aes128_hex, key: "aes128" },
+                  { label: "AES-256 key material (Hex 32-byte)", value: generatedKeys.aes256_hex, key: "aes256" },
+                  { label: "AES-128 key material (Hex 16-byte)", value: generatedKeys.aes128_hex, key: "aes128" },
                   { label: "Secure API Bearer Token (Base64URL 48-Byte)", value: generatedKeys.api_token_64, key: "token" },
                   { label: "UUID v4 (RFC 4122 Compliant)", value: generatedKeys.uuid_v4, key: "uuid" },
                   { label: "High-Entropy Passphrase / Secret", value: generatedKeys.secure_passphrase, key: "passphrase" }
@@ -616,7 +638,7 @@ export default function Cryptography() {
             </p>
             <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px", color: "#cbd5e1" }}>
               <div>&bull; <b>No pseudorandom PRNG seeds</b> (unpredictable)</div>
-              <div>&bull; <b>Quantum-safe AES-256</b> symmetric key capability</div>
+              <div>&bull; Key material for use with a <b>trusted encryption library</b></div>
               <div>&bull; <b>Collision-resistant</b> UUIDv4 space (&gt; 5.3 &times; 10<sup>36</sup>)</div>
             </div>
           </div>

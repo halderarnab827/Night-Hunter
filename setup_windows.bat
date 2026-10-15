@@ -7,7 +7,6 @@ python -m pip install -r requirement.txt
 if errorlevel 1 goto :error
 
 echo Installing frontend packages and building the dashboard...
-cd frontend
 call npm install
 if errorlevel 1 goto :error
 call npm run build

@@ -206,7 +206,7 @@ export default function PhishingAnalyzer() {
         {[
           { id: "url", label: "URL Risk Inspector", icon: LinkIcon },
           { id: "homoglyph", label: "Homoglyph & Brand Lab", icon: Fingerprint },
-          { id: "triage", label: "Email / SMS Link Triage", icon: Mail },
+          { id: "triage", label: "Scam Message Analyzer", icon: Mail },
           { id: "playbook", label: "Mitigation Playbook", icon: BookOpen }
         ].map((tab) => {
           const Icon = tab.icon;
@@ -484,19 +484,19 @@ export default function PhishingAnalyzer() {
         </div>
       )}
 
-      {/* TAB 3: Email / SMS Link Triage */}
+      {/* TAB 3: Scam Message Triage */}
       {activeTab === "triage" && (
         <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "20px" }}>
           <form className="crypto-tool-card" onSubmit={runEmailTriage} style={{ padding: "24px" }}>
             <div className="crypto-card-heading">
               <div>
-                <span>EMAIL / SMS SOCIAL ENGINEERING TRIAGE</span>
-                <h3>Paste Suspicious Message Text</h3>
+                <span>EMAIL · SMS · OTP · SCAM TRIAGE</span>
+                <h3>Paste a suspicious message</h3>
               </div>
               <Mail size={20} color="#ff86de" />
             </div>
             <p style={{ color: "#8e9ab8", fontSize: "13px", lineHeight: "1.5", margin: "0 0 14px" }}>
-              Paste the entire body of a suspicious email, message, or support ticket. Night Hunter extracts all hidden URLs and audits social engineering urgency triggers automatically.
+              Paste an email, SMS, WhatsApp message, fake support chat, OTP request, delivery notice, or crypto scam. Analysis stays local; it extracts links and explains the warning signals it finds.
             </p>
 
             <textarea
@@ -504,10 +504,8 @@ export default function PhishingAnalyzer() {
               value={emailText}
               onChange={(e) => setEmailText(e.target.value)}
               placeholder={`Example:
-Dear Customer,
-Your account has been temporarily restricted due to unauthorized login attempts.
-You must verify your billing details within 24 hours or your access will be terminated.
-Confirm identity here: https://paypal-security-verification.xyz/login`}
+Your bank account will be blocked today. Share the OTP we just sent to verify your identity.
+Open https://example-security-check.com now to avoid suspension.`}
               style={{
                 width: "100%",
                 background: "rgba(5, 8, 20, 0.8)",
@@ -528,35 +526,42 @@ Confirm identity here: https://paypal-security-verification.xyz/login`}
               style={{ marginTop: "16px", width: "100%" }}
             >
               {triageLoading ? <RefreshCw className="spin-icon" size={16} /> : <Search size={16} />}
-              {triageLoading ? "TRIAGING MESSAGE..." : "RUN AUTOMATED TRIAGE"}
+              {triageLoading ? "ANALYZING MESSAGE..." : "ANALYZE SCAM SIGNALS"}
             </button>
             {triageError && <p className="phishing-error">{triageError}</p>}
           </form>
 
           <div className="crypto-side-card" style={{ padding: "24px" }}>
             <span style={{ color: "#8f9abb", fontSize: "10px", fontWeight: "800", letterSpacing: "1px" }}>TRIAGE INTELLIGENCE</span>
-            <h3 style={{ color: "#edf0ff", margin: "4px 0 16px", fontSize: "18px" }}>Extracted Threat Signals</h3>
+            <h3 style={{ color: "#edf0ff", margin: "4px 0 16px", fontSize: "18px" }}>Scam-risk assessment</h3>
 
             {triageReport ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ padding: "12px", borderRadius: "8px", background: triageReport.risk_score >= 70 ? "rgba(239,68,68,0.16)" : triageReport.risk_score >= 45 ? "rgba(245,158,11,0.14)" : "rgba(34,197,94,0.12)", border: "1px solid rgba(255,255,255,0.09)" }}>
+                  <small style={{ color: "#94a3b8", display: "block", letterSpacing: "0.8px" }}>LOCAL HEURISTIC RISK</small>
+                  <strong style={{ display: "block", marginTop: "2px", color: triageReport.risk_score >= 70 ? "#fca5a5" : triageReport.risk_score >= 45 ? "#fcd34d" : "#86efac", fontSize: "22px" }}>
+                    {triageReport.risk_level || "REVIEW"} · {triageReport.risk_score ?? 0}/100
+                  </strong>
+                  <small style={{ color: "#94a3b8", display: "block", marginTop: "5px", lineHeight: "1.35" }}>{triageReport.assessment_note || "Signals are warnings, not proof of sender identity."}</small>
+                </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                   <div style={{ background: "rgba(0,0,0,0.3)", padding: "10px", borderRadius: "8px" }}>
                     <small style={{ color: "#7482a5", display: "block" }}>LINKS FOUND</small>
                     <strong style={{ fontSize: "18px", color: "#38bdf8" }}>{triageReport.total_links}</strong>
                   </div>
                   <div style={{ background: "rgba(0,0,0,0.3)", padding: "10px", borderRadius: "8px" }}>
-                    <small style={{ color: "#7482a5", display: "block" }}>URGENCY TRIGGERS</small>
-                    <strong style={{ fontSize: "18px", color: triageReport.urgency_triggers.length ? "#f87171" : "#4ade80" }}>
-                      {triageReport.urgency_triggers.length}
+                    <small style={{ color: "#7482a5", display: "block" }}>SIGNAL GROUPS</small>
+                    <strong style={{ fontSize: "18px", color: (triageReport.scam_patterns || triageReport.urgency_triggers || []).length ? "#f87171" : "#4ade80" }}>
+                      {(triageReport.scam_patterns || triageReport.urgency_triggers || []).length}
                     </strong>
                   </div>
                 </div>
 
-                {triageReport.urgency_triggers.length > 0 && (
+                {(triageReport.scam_patterns || triageReport.urgency_triggers || []).length > 0 && (
                   <div>
-                    <strong style={{ fontSize: "12px", color: "#f87171" }}>Psychological Triggers Detected:</strong>
+                    <strong style={{ fontSize: "12px", color: "#f87171" }}>Warning signals detected:</strong>
                     <div style={{ marginTop: "6px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                      {triageReport.urgency_triggers.map((trig, i) => (
+                      {(triageReport.scam_patterns || triageReport.urgency_triggers || []).map((trig, i) => (
                         <span key={i} style={{ background: "rgba(239,68,68,0.2)", border: "1px solid rgba(239,68,68,0.4)", color: "#fca5a5", padding: "3px 8px", borderRadius: "6px", fontSize: "11px" }}>
                           {trig.category} ({trig.keywords.join(", ")})
                         </span>
@@ -586,6 +591,15 @@ Confirm identity here: https://paypal-security-verification.xyz/login`}
                     <p style={{ color: "#7482a5", fontSize: "12px", marginTop: "4px" }}>No web links were detected in the supplied text.</p>
                   )}
                 </div>
+
+                {triageReport.recommended_actions?.length > 0 && (
+                  <div>
+                    <strong style={{ fontSize: "12px", color: "#85dfff" }}>Recommended next steps:</strong>
+                    <ul style={{ margin: "6px 0 0", paddingLeft: "18px", color: "#cbd5e1", fontSize: "12px", lineHeight: "1.55" }}>
+                      {triageReport.recommended_actions.map((action, i) => <li key={i}>{action}</li>)}
+                    </ul>
+                  </div>
+                )}
               </div>
             ) : (
               <div style={{ color: "#7482a5", fontSize: "13px" }}>

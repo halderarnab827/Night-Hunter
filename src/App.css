@@ -1278,6 +1278,63 @@ button {
 .module-state.success { color: #7ff1bc; border-color: rgba(62, 229, 159, .32); }
 .module-state.success > span { background: #5df1ac; box-shadow: 0 0 12px rgba(75, 244, 174, .85); }
 
+/* Flagship workspaces use motion as feedback, never as decoration that hides data. */
+.phishing-page .module-header,
+.crypto-page .module-header,
+.web-security-header {
+    position: relative;
+    padding: 18px 20px;
+    border: 1px solid rgba(119, 132, 231, .18);
+    border-radius: 18px;
+    background:
+        linear-gradient(110deg, rgba(19, 22, 56, .72), rgba(9, 11, 28, .9)),
+        radial-gradient(circle at 88% 0%, rgba(255, 69, 208, .14), transparent 32%);
+    overflow: hidden;
+}
+
+.phishing-page .module-header::after,
+.crypto-page .module-header::after,
+.web-security-header::after {
+    content: "";
+    position: absolute;
+    inset: auto -15% 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #67e8f9, #f0abfc, transparent);
+    opacity: .7;
+    animation: nightHunterSignal 5s ease-in-out infinite;
+}
+
+.phishing-page .crypto-tool-card,
+.phishing-page .crypto-side-card,
+.crypto-page .crypto-tool-card,
+.crypto-page .crypto-side-card {
+    transition: border-color .22s ease, transform .22s ease, box-shadow .22s ease;
+}
+
+.phishing-page .crypto-tool-card:hover,
+.phishing-page .crypto-side-card:hover,
+.crypto-page .crypto-tool-card:hover,
+.crypto-page .crypto-side-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(160, 128, 255, .4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 20px 44px rgba(2, 5, 22, .35), 0 0 28px rgba(140, 82, 255, .08);
+}
+
+@keyframes nightHunterSignal {
+    0%, 100% { transform: translateX(-9%); opacity: .25; }
+    50% { transform: translateX(9%); opacity: .9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .phishing-page .module-header::after,
+    .crypto-page .module-header::after,
+    .web-security-header::after { animation: none; }
+    .phishing-page .crypto-tool-card:hover,
+    .phishing-page .crypto-side-card:hover,
+    .crypto-page .crypto-tool-card:hover,
+    .crypto-page .crypto-side-card:hover { transform: none; }
+}
+
 /* Network */
 .network-scan-layout,
 .phishing-workspace,

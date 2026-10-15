@@ -36,6 +36,8 @@ function WebSecurity() {
 
   const [error, setError] = useState("");
 
+  const [authorized, setAuthorized] = useState(false);
+
   const [scanLines, setScanLines] = useState([
     "[+] Web Security engine ready.",
     "[+] Waiting for target input..."
@@ -80,6 +82,13 @@ function WebSecurity() {
       return;
     }
 
+    if (!authorized) {
+      setStatus("AUTHORISATION REQUIRED");
+      setError("Confirm that you own this target or have explicit permission before an active audit.");
+      addLine("[!] Authorisation confirmation is required.");
+      return;
+    }
+
 
     setScanning(true);
 
@@ -105,7 +114,8 @@ function WebSecurity() {
       },
 
       body: JSON.stringify({
-        target: cleanTarget
+        target: cleanTarget,
+        authorized: true
       })
 
     })
@@ -352,15 +362,15 @@ function WebSecurity() {
         <div>
 
           <p className="eyebrow">
-            NIGHT HUNTER · NIKTO-STYLE WEB AUDITOR
+            NIGHT HUNTER · AUTHORISED WEB AUDIT
           </p>
 
           <h2>
-            Web Security & Vulnerability Scanner
+            Web Security Inspection
           </h2>
 
           <p className="subtitle">
-            Server Banners · Security Headers · Sensitive Endpoints · Insecure Methods · Misconfigurations
+            Real checks: headers · TLS · cookies · HTTP methods · public endpoints · technology signals · safe reflection indicators
           </p>
 
         </div>
@@ -442,10 +452,15 @@ function WebSecurity() {
 
 
         <div className="target-hint">
-
-          <span>
-            Authorized security testing only
-          </span>
+          <label style={{ display: "inline-flex", gap: "8px", alignItems: "center", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={authorized}
+              onChange={(event) => setAuthorized(event.target.checked)}
+              disabled={scanning}
+            />
+            <span>I own this target or have explicit permission to audit it</span>
+          </label>
 
           {target && !scanning && (
 
