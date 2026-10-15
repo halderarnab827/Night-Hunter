@@ -8,4 +8,8 @@ build/
 .build-venv/
 *.spec
 dist/NightHunter.exe
-
+reports/*.json
+reports/*.html
+reports/*.txt
+!reports/.gitkeep
+frontend/

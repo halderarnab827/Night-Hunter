@@ -30,7 +30,12 @@
 
 import base64
 import hashlib
+import hmac
+import math
+import re
+import secrets
 import urllib.parse
+import uuid
 from pathlib import Path
 
 
@@ -624,85 +629,293 @@ def xor_decode(hex_text, key):
 
 
 # ============================================================
-# HASH IDENTIFICATION
+# HASH IDENTIFICATION (CRYPTO ANALYST ENGINE)
 # ============================================================
 
 def identify_common_hash(hash_value):
     """
-    Estimate common hash types from digest length.
-
-    This is only a basic length-based identification.
-    Different algorithms can produce strings of the same
-    length, so this function does not guarantee the algorithm.
+    Estimate common hash types from digest length and patterns.
     """
-
-    if not hash_value:
-        return []
-
-    value = str(hash_value).strip()
-
-    candidates = []
-
-    if len(value) == 32:
-        candidates.append("MD5")
-
-    if len(value) == 40:
-        candidates.append("SHA-1")
-
-    if len(value) == 56:
-        candidates.append("SHA-224")
-
-    if len(value) == 64:
-        candidates.extend([
-            "SHA-256",
-            "SHA3-256",
-            "BLAKE2s-256"
-        ])
-
-    if len(value) == 96:
-        candidates.extend([
-            "SHA-384",
-            "SHA3-384"
-        ])
-
-    if len(value) == 128:
-        candidates.extend([
-            "SHA-512",
-            "SHA3-512",
-            "BLAKE2b-512"
-        ])
-
-    return candidates
+    info = get_hash_information(hash_value)
+    return [c["algorithm"] for c in info.get("candidates", [])]
 
 
 # ============================================================
-# HASH INFORMATION
+# HASH INFORMATION & ANALYSIS
 # ============================================================
 
 def get_hash_information(hash_value):
     """
-    Return basic information about a hash string.
+    Comprehensive hash format analyzer for defensive security analysts.
+    Identifies candidate algorithms based on length, prefix, character set, and format.
     """
-
     if hash_value is None:
-        raise ValueError(
-            "Hash value cannot be None."
-        )
+        raise ValueError("Hash value cannot be None.")
 
-    value = str(hash_value).strip()
+    val = str(hash_value).strip()
+    if not val:
+        return {"value": "", "length": 0, "hexadecimal": False, "charset": "Empty", "entropy": 0.0, "candidates": []}
 
-    hexadecimal = all(
-        character in "0123456789abcdefABCDEF"
-        for character in value
-    )
+    length = len(val)
+    is_hex = bool(re.match(r'^[0-9a-fA-F]+$', val))
+    is_b64 = bool(re.match(r'^[A-Za-z0-9+/=]+$', val))
+
+    # Shannon Entropy calculation
+    prob = [val.count(c) / length for c in set(val)]
+    entropy = -sum(p * math.log2(p) for p in prob) if prob else 0.0
+
+    candidates = []
+
+    # Modular Crypt Format prefixes
+    if val.startswith(("$2a$", "$2b$", "$2y$")):
+        candidates.append({
+            "algorithm": "Bcrypt",
+            "category": "Password Hashing Function",
+            "bit_length": 184,
+            "confidence": "VERY HIGH",
+            "status": "SECURE",
+            "description": "Blowfish-based adaptive password hashing with configurable work factor."
+        })
+    elif val.startswith("$argon2"):
+        candidates.append({
+            "algorithm": "Argon2",
+            "category": "Password Hashing (PHC Winner)",
+            "bit_length": "Adaptive",
+            "confidence": "VERY HIGH",
+            "status": "SECURE",
+            "description": "Memory-hard password hashing algorithm designed to resist GPU/ASIC attacks."
+        })
+    elif val.startswith("$6$"):
+        candidates.append({
+            "algorithm": "SHA-512 Crypt",
+            "category": "Unix / Linux Shadow Password",
+            "bit_length": 512,
+            "confidence": "VERY HIGH",
+            "status": "STANDARD",
+            "description": "Salted multiple-round SHA-512 used in modern Linux /etc/shadow."
+        })
+    elif val.startswith("$5$"):
+        candidates.append({
+            "algorithm": "SHA-256 Crypt",
+            "category": "Unix / Linux Shadow Password",
+            "bit_length": 256,
+            "confidence": "VERY HIGH",
+            "status": "STANDARD",
+            "description": "Salted multiple-round SHA-256 used in Unix /etc/shadow."
+        })
+    elif val.startswith("$1$"):
+        candidates.append({
+            "algorithm": "MD5 Crypt",
+            "category": "Legacy Unix / Apache Password",
+            "bit_length": 128,
+            "confidence": "VERY HIGH",
+            "status": "WEAK",
+            "description": "Legacy MD5-based password hash. Vulnerable to fast GPU brute-force."
+        })
+
+    # Length-based hex matches
+    if is_hex:
+        if length == 32:
+            candidates.extend([
+                {
+                    "algorithm": "MD5",
+                    "category": "Message Digest",
+                    "bit_length": 128,
+                    "confidence": "HIGH",
+                    "status": "VULNERABLE",
+                    "description": "Cryptographically broken against collision attacks. Unsafe for signatures or passwords."
+                },
+                {
+                    "algorithm": "NTLM",
+                    "category": "Windows Authentication",
+                    "bit_length": 128,
+                    "confidence": "MEDIUM",
+                    "status": "LEGACY",
+                    "description": "Microsoft Windows NT LAN Manager hash (MD4 of UTF-16LE). Vulnerable to pass-the-hash."
+                },
+                {
+                    "algorithm": "MD4",
+                    "category": "Message Digest",
+                    "bit_length": 128,
+                    "confidence": "LOW",
+                    "status": "OBSOLETE",
+                    "description": "Predecessor of MD5, completely broken."
+                }
+            ])
+        elif length == 40:
+            candidates.extend([
+                {
+                    "algorithm": "SHA-1",
+                    "category": "Secure Hash Algorithm 1",
+                    "bit_length": 160,
+                    "confidence": "HIGH",
+                    "status": "DEPRECATED",
+                    "description": "NIST deprecated due to practical collision attacks (SHAttered). Avoid in new systems."
+                },
+                {
+                    "algorithm": "RIPEMD-160",
+                    "category": "Cryptographic Hash",
+                    "bit_length": 160,
+                    "confidence": "MEDIUM",
+                    "status": "LEGACY",
+                    "description": "Used in Bitcoin address generation and PGP signatures."
+                }
+            ])
+        elif length == 56:
+            candidates.extend([
+                {
+                    "algorithm": "SHA-224",
+                    "category": "SHA-2 Family",
+                    "bit_length": 224,
+                    "confidence": "HIGH",
+                    "status": "SECURE",
+                    "description": "Truncated version of SHA-256 with 224-bit collision resistance."
+                },
+                {
+                    "algorithm": "SHA3-224",
+                    "category": "SHA-3 Family (Keccak)",
+                    "bit_length": 224,
+                    "confidence": "MEDIUM",
+                    "status": "SECURE",
+                    "description": "Keccak permutation NIST standardized hash."
+                }
+            ])
+        elif length == 64:
+            candidates.extend([
+                {
+                    "algorithm": "SHA-256",
+                    "category": "SHA-2 Family (NIST Standard)",
+                    "bit_length": 256,
+                    "confidence": "VERY HIGH",
+                    "status": "SECURE",
+                    "description": "Industry standard cryptographic hash. Used in TLS, Bitcoin, and code signing."
+                },
+                {
+                    "algorithm": "SHA3-256",
+                    "category": "SHA-3 Family (Keccak)",
+                    "bit_length": 256,
+                    "confidence": "HIGH",
+                    "status": "SECURE",
+                    "description": "Modern sponge construction resistant to length extension attacks."
+                },
+                {
+                    "algorithm": "BLAKE2s",
+                    "category": "High-Performance Hash",
+                    "bit_length": 256,
+                    "confidence": "MEDIUM",
+                    "status": "SECURE",
+                    "description": "Optimized for 8-to-32-bit platforms, comparable security to SHA-256."
+                }
+            ])
+        elif length == 96:
+            candidates.extend([
+                {
+                    "algorithm": "SHA-384",
+                    "category": "SHA-2 Family",
+                    "bit_length": 384,
+                    "confidence": "HIGH",
+                    "status": "SECURE",
+                    "description": "Truncated version of SHA-512, provides 192 bits of security against quantum collision."
+                },
+                {
+                    "algorithm": "SHA3-384",
+                    "category": "SHA-3 Family",
+                    "bit_length": 384,
+                    "confidence": "MEDIUM",
+                    "status": "SECURE",
+                    "description": "Keccak sponge construction with 384-bit output."
+                }
+            ])
+        elif length == 128:
+            candidates.extend([
+                {
+                    "algorithm": "SHA-512",
+                    "category": "SHA-2 Family (High Security)",
+                    "bit_length": 512,
+                    "confidence": "VERY HIGH",
+                    "status": "SECURE",
+                    "description": "Maximum security 512-bit digest, fast on 64-bit architectures."
+                },
+                {
+                    "algorithm": "SHA3-512",
+                    "category": "SHA-3 Family (Keccak)",
+                    "bit_length": 512,
+                    "confidence": "HIGH",
+                    "status": "SECURE",
+                    "description": "Keccak sponge construction with maximum 512-bit capacity."
+                },
+                {
+                    "algorithm": "BLAKE2b",
+                    "category": "High-Performance Hash",
+                    "bit_length": 512,
+                    "confidence": "HIGH",
+                    "status": "SECURE",
+                    "description": "Faster than MD5 and SHA-1 while providing equal or greater security than SHA-512."
+                }
+            ])
+        elif length == 8:
+            candidates.append({
+                "algorithm": "CRC32",
+                "category": "Checksum",
+                "bit_length": 32,
+                "confidence": "MEDIUM",
+                "status": "NON-CRYPTOGRAPHIC",
+                "description": "Error-detecting checksum for network/archive integrity, not collision resistant."
+            })
+        elif length == 16:
+            candidates.append({
+                "algorithm": "CRC64 / MySQL Old Password",
+                "category": "Checksum / Legacy",
+                "bit_length": 64,
+                "confidence": "MEDIUM",
+                "status": "NON-CRYPTOGRAPHIC",
+                "description": "CRC64 checksum or legacy MySQL 3.23 password hash."
+            })
+
+    charset_desc = "Hexadecimal (0-9, a-f)" if is_hex else "Base64 (A-Z, a-z, 0-9, +, /, =)" if is_b64 else "ASCII / Modular Crypt Format"
 
     return {
-        "value": value,
-        "length": len(value),
-        "hexadecimal": hexadecimal,
-        "possible_algorithms":
-            identify_common_hash(value)
+        "value": val,
+        "length": length,
+        "hexadecimal": is_hex,
+        "charset": charset_desc,
+        "entropy": round(entropy, 2),
+        "candidates": candidates,
+        "possible_algorithms": [c["algorithm"] for c in candidates]
     }
+
+
+# ============================================================
+# CSPRNG KEY & TOKEN GENERATOR
+# ============================================================
+
+def generate_security_keys():
+    """
+    Generate cryptographically secure keys and tokens via CSPRNG.
+    """
+    return {
+        "aes128_hex": secrets.token_hex(16),
+        "aes256_hex": secrets.token_hex(32),
+        "api_token_64": secrets.token_urlsafe(48),
+        "uuid_v4": str(uuid.uuid4()),
+        "secure_passphrase": secrets.token_urlsafe(24),
+    }
+
+
+# ============================================================
+# HMAC MESSAGE AUTHENTICATION
+# ============================================================
+
+def hmac_digest(text, key, algorithm="sha256"):
+    """
+    Generate HMAC authentication digest.
+    """
+    h_func = hashlib.sha512 if str(algorithm).lower() == "sha512" else hashlib.sha256
+    return hmac.new(
+        str(key).encode("utf-8"),
+        str(text).encode("utf-8"),
+        h_func
+    ).hexdigest()
 
 
 # ============================================================

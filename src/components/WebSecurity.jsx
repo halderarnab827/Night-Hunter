@@ -352,15 +352,15 @@ function WebSecurity() {
         <div>
 
           <p className="eyebrow">
-            NIGHT HUNTER · WEB SECURITY
+            NIGHT HUNTER · NIKTO-STYLE WEB AUDITOR
           </p>
 
           <h2>
-            Web Security
+            Web Security & Vulnerability Scanner
           </h2>
 
           <p className="subtitle">
-            Scan · Discover · Analyze · Fix
+            Server Banners · Security Headers · Sensitive Endpoints · Insecure Methods · Misconfigurations
           </p>
 
         </div>

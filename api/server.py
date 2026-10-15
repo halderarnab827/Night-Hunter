@@ -1,6 +1,7 @@
 from pathlib import Path
 import json
 import sys
+import re
 
 from flask import Flask, Response, jsonify, request, send_from_directory, stream_with_context
 from flask_cors import CORS
@@ -304,10 +305,51 @@ def network_nmap_scan():
 
 @app.post("/api/phishing")
 def phishing_analysis():
-    """Analyze URL characteristics without fetching the remote page."""
+    """Analyze URL characteristics without fetching remote page, with email/text triage and homoglyphs."""
     try:
         data = request.get_json(silent=True) or {}
         target = str(data.get("target", "")).strip()
+        mode = str(data.get("mode", "url")).strip()
+        text_content = str(data.get("text", "")).strip()
+        if mode == "email_triage" or (not target and text_content):
+            found_urls = re.findall(r'(?:https?://|www\.)[^\s<>"\']+', text_content)
+            triggers_found = []
+            trigger_patterns = [
+                ("Account Suspension", ["suspend", "locked", "disabled", "terminated", "deactivated", "restriction"]),
+                ("Urgent Action Required", ["immediately", "urgent", "24 hours", "action required", "within 24h", "time sensitive"]),
+                ("Credential Verification", ["verify your password", "confirm password", "enter credentials", "validate account", "update login"]),
+                ("Financial Threat / Billing", ["unauthorized transaction", "wire transfer", "payment failed", "invoice attached", "unusual charge"]),
+                ("Security Alert", ["security alert", "suspicious activity", "unrecognized device", "new sign-in", "breach"]),
+            ]
+            lower_text = text_content.lower()
+            for cat, keywords in trigger_patterns:
+                matched = [kw for kw in keywords if kw in lower_text]
+                if matched:
+                    triggers_found.append({"category": cat, "keywords": matched})
+
+            url_reports = []
+            for u in found_urls[:5]:
+                fixed_u = u if u.startswith("http") else f"https://{u}"
+                try:
+                    rep = PhishingAnalyzer(fixed_u, fetch_content=False).analyze()
+                    url_reports.append(rep)
+                except Exception:
+                    pass
+
+            result = {
+                "mode": "email_triage",
+                "extracted_urls": found_urls,
+                "urgency_triggers": triggers_found,
+                "url_reports": url_reports,
+                "total_links": len(found_urls),
+                "high_risk_links": sum(1 for r in url_reports if r.get("risk_score", 0) >= 60)
+            }
+            remember_activity(
+                "Phishing Analyzer", f"Email triage ({len(found_urls)} link(s))", "Complete",
+                f"Extracted {len(found_urls)} link(s); {len(triggers_found)} threat trigger(s) detected.", result,
+            )
+            return jsonify({"success": True, "report": result})
+
         if not target:
             return jsonify({"success": False, "error": "A URL is required."}), 400
 
@@ -328,16 +370,24 @@ def phishing_analysis():
 def cryptography():
     try:
         data = request.get_json(silent=True) or {}
-        text = data.get("text")
         operation = str(data.get("operation", "hash")).strip().lower()
+        text = data.get("text")
+
+        if operation == "generate_keys":
+            result = crypto_tools.generate_security_keys()
+            remember_activity(
+                "Crypto Lab", "CSPRNG Key Generation", "Complete",
+                "Generated secure random cryptographic tokens and keys.",
+                {"operation": operation, "result": result},
+            )
+            return jsonify({"success": True, "operation": operation, "result": result})
 
         if text is None or text == "":
             return jsonify({"success": False, "error": "Text is required."}), 400
 
         operations = {
-            # Hash mode deliberately returns every supported digest. Users do
-            # not need to choose an algorithm just to compare hashes.
             "hash": lambda: crypto_tools.hash_text_all(text),
+            "identify": lambda: crypto_tools.get_hash_information(text),
             "base64_encode": lambda: crypto_tools.base64_encode(text),
             "base64_decode": lambda: crypto_tools.base64_decode(text),
             "hex_encode": lambda: crypto_tools.hex_encode(text),
@@ -345,15 +395,15 @@ def cryptography():
             "url_encode": lambda: crypto_tools.url_encode(text),
             "url_decode": lambda: crypto_tools.url_decode(text),
             "rot13": lambda: crypto_tools.rot13(text),
+            "hmac_sha256": lambda: crypto_tools.hmac_digest(text, data.get("key", "night_hunter_secret"), "sha256"),
+            "hmac_sha512": lambda: crypto_tools.hmac_digest(text, data.get("key", "night_hunter_secret"), "sha512"),
         }
         if operation not in operations:
             return jsonify({"success": False, "error": "Unsupported operation."}), 400
 
         result = operations[operation]()
-        # Keep source text out of history. Encoded/decoded output is still shown
-        # because the user asked for an audit trail of the completed operation.
         remember_activity(
-            "Crypto Lab", "Local text input", "Complete",
+            "Crypto Lab", "Local input", "Complete",
             f"Completed {operation.replace('_', ' ')} operation.",
             {"operation": operation, "result": result},
         )
