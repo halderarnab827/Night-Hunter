@@ -30,6 +30,8 @@ Night Hunter operates in two complementary modes:
 🌐 **Official Live Web Application:** [night-hunter-f2w4.onrender.com](https://night-hunter-f2w4.onrender.com)  
 📦 **Official GitHub Releases:** [Releases Directory](https://github.com/halderarnab827/Night-Hunter/tree/main/releases)
 
+📘 **Complete setup and user guide:** [USER_GUIDE.md](USER_GUIDE.md)
+
 ---
 
 ## 📥 Latest Downloads (v1.6.2)
