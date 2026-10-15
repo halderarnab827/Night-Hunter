@@ -17,6 +17,7 @@ ITEMS_TO_INCLUDE = [
     "main.py",
     "requirement.txt",
     "README.md",
+    "USER_GUIDE.md",
 ]
 
 def clean_pycache(directory: Path):
@@ -34,13 +35,13 @@ def clean_pycache(directory: Path):
 def build_linux():
     stage = RELEASES_DIR / "night-hunter-linux"
     if stage.exists():
-        shutil.rmtree(stage)
-    stage.mkdir(parents=True)
+        shutil.rmtree(stage, ignore_errors=True)
+    stage.mkdir(parents=True, exist_ok=True)
 
     for item in ITEMS_TO_INCLUDE + ["install.sh"]:
         src = ROOT / item
         if src.is_dir():
-            shutil.copytree(src, stage / item)
+            shutil.copytree(src, stage / item, dirs_exist_ok=True)
         elif src.is_file():
             shutil.copy2(src, stage / item)
 
@@ -55,13 +56,13 @@ def build_linux():
 def build_termux():
     stage = RELEASES_DIR / "night-hunter-termux"
     if stage.exists():
-        shutil.rmtree(stage)
-    stage.mkdir(parents=True)
+        shutil.rmtree(stage, ignore_errors=True)
+    stage.mkdir(parents=True, exist_ok=True)
 
     for item in ITEMS_TO_INCLUDE:
         src = ROOT / item
         if src.is_dir():
-            shutil.copytree(src, stage / item)
+            shutil.copytree(src, stage / item, dirs_exist_ok=True)
         elif src.is_file():
             shutil.copy2(src, stage / item)
 
@@ -84,13 +85,13 @@ def build_termux():
 def build_windows():
     stage = RELEASES_DIR / "night-hunter-windows"
     if stage.exists():
-        shutil.rmtree(stage)
-    stage.mkdir(parents=True)
+        shutil.rmtree(stage, ignore_errors=True)
+    stage.mkdir(parents=True, exist_ok=True)
 
     for item in ITEMS_TO_INCLUDE:
         src = ROOT / item
         if src.is_dir():
-            shutil.copytree(src, stage / item)
+            shutil.copytree(src, stage / item, dirs_exist_ok=True)
         elif src.is_file():
             shutil.copy2(src, stage / item)
 
@@ -112,7 +113,7 @@ def build_windows():
     shutil.rmtree(stage, ignore_errors=True)
 
 if __name__ == "__main__":
-    print("[*] Packaging Night Hunter v1.6.2 releases...")
+    print("[*] Packaging Night Hunter v1.7.0 releases...")
     build_linux()
     build_termux()
     build_windows()
