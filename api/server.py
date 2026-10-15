@@ -19,6 +19,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 
 from modules.web_security.pentest import run_web_pentest
+from modules.web_security.scanner_hub import run_local_scanner, scanner_status
 from modules.password_security import checker
 from modules.network_security import checker as network_checker
 from modules.network_security.device_scanner import nmap_profile_status, run_nmap_profile
@@ -238,6 +239,37 @@ def web_security():
             "success": False,
             "error": str(error)
         }), 500
+
+
+@app.get("/api/web-security/scanners")
+def web_security_scanners():
+    """Return real integration availability for the current device."""
+    return jsonify({"success": True, **scanner_status()})
+
+
+@app.post("/api/web-security/scanners/<scanner>")
+def web_security_external_scanner(scanner):
+    """Launch an explicitly selected, installed local scanner after consent."""
+    data = request.get_json(silent=True) or {}
+    if data.get("authorized") is not True:
+        return jsonify({
+            "success": False,
+            "error": "Confirm that you own the target or have explicit permission before running an external scanner."
+        }), 400
+    target = str(data.get("target", "")).strip()
+    if not target:
+        return jsonify({"success": False, "error": "Target URL is required."}), 400
+    try:
+        result = run_local_scanner(scanner.lower(), target)
+        remember_activity(
+            "Web Security", target, "Complete",
+            f"Completed local {scanner.lower()} scan.", result,
+        )
+        return jsonify({"success": True, "result": result})
+    except (RuntimeError, ValueError) as error:
+        return jsonify({"success": False, "error": str(error)}), 400
+    except Exception as error:
+        return jsonify({"success": False, "error": str(error)}), 500
 
 
 @app.post("/api/password-security")

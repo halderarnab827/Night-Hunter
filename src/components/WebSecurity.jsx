@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Globe,
@@ -38,10 +38,21 @@ function WebSecurity() {
 
   const [authorized, setAuthorized] = useState(false);
 
+  const [scannerHub, setScannerHub] = useState(null);
+  const [externalScan, setExternalScan] = useState(null);
+  const [externalLoading, setExternalLoading] = useState("");
+
   const [scanLines, setScanLines] = useState([
     "[+] Web Security engine ready.",
     "[+] Waiting for target input..."
   ]);
+
+  useEffect(() => {
+    fetch("/api/web-security/scanners")
+      .then((response) => response.json())
+      .then((data) => { if (data.success) setScannerHub(data); })
+      .catch(() => setScannerHub(null));
+  }, []);
 
 
   function addLine(line) {
@@ -204,6 +215,35 @@ function WebSecurity() {
       "[+] Waiting for target input..."
     ]);
 
+  }
+
+  async function runExternalScanner(scanner) {
+    const cleanTarget = target.trim();
+    if (!cleanTarget) {
+      setError("Enter a target URL before selecting a scanner.");
+      return;
+    }
+    if (!authorized) {
+      setError("Confirm authorisation before launching an external scanner.");
+      return;
+    }
+    setExternalLoading(scanner);
+    setExternalScan(null);
+    setError("");
+    try {
+      const response = await fetch(`/api/web-security/scanners/${scanner}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ target: cleanTarget, authorized: true })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || `${scanner} did not complete.`);
+      setExternalScan(data.result);
+    } catch (scanError) {
+      setError(scanError.message);
+    } finally {
+      setExternalLoading("");
+    }
   }
 
 
@@ -479,6 +519,39 @@ function WebSecurity() {
         </div>
 
       </form>
+
+      <section style={{ marginTop: "18px", padding: "18px", border: "1px solid rgba(112, 127, 255, 0.2)", borderRadius: "12px", background: "rgba(8, 10, 25, 0.78)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px", flexWrap: "wrap" }}>
+          <div>
+            <p className="eyebrow" style={{ margin: 0 }}>ADVANCED SCANNER HUB</p>
+            <h3 style={{ margin: "5px 0", color: "#edf0ff" }}>Use installed tools — never simulated results</h3>
+            <p style={{ margin: 0, color: "#8e9ab8", fontSize: "12px", lineHeight: 1.5 }}>Nikto and Nuclei run only from your local Windows/Linux/Termux installation. Nessus and Acunetix require your own licensed server and API connector.</p>
+          </div>
+          <span className="scan-status"><span />{scannerHub?.runtime === "cloud" ? "CLOUD: LOCAL TOOLS OFF" : "LOCAL TOOL CHECK"}</span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "10px", marginTop: "16px" }}>
+          {["night_hunter", "nikto", "nuclei", "openvas"].map((id) => {
+            const item = scannerHub?.scanners?.[id];
+            const launchable = id === "nikto" || id === "nuclei" || id === "openvas";
+            return <article key={id} style={{ padding: "13px", borderRadius: "9px", border: "1px solid rgba(255,255,255,0.09)", background: "rgba(0,0,0,0.22)" }}>
+              <strong style={{ color: "#e9edff", display: "block", fontSize: "13px" }}>{item?.name || id}</strong>
+              <small style={{ color: item?.available ? "#7ff0ca" : "#94a3b8", display: "block", margin: "5px 0" }}>{item?.available ? "AVAILABLE ON THIS DEVICE" : item?.kind === "licensed-connector" ? "LICENSED CONNECTOR REQUIRED" : "NOT INSTALLED / CLOUD MODE"}</small>
+              <p style={{ color: "#9da7c5", fontSize: "11px", lineHeight: 1.45, minHeight: "32px", margin: "5px 0 10px" }}>{item?.description || "Checking scanner availability…"}</p>
+              {launchable ? <button type="button" className="clear-button" disabled={!item?.available || Boolean(externalLoading)} onClick={() => runExternalScanner(id)}>
+                {externalLoading === id ? "RUNNING…" : `RUN ${id.toUpperCase()}`}
+              </button> : <small style={{ color: "#6f7894", fontSize: "10px" }}>{item?.setup || (id === "night_hunter" ? "Use Start Scan above." : "Connector setup is intentionally separate.")}</small>}
+            </article>;
+          })}
+        </div>
+
+        {externalScan && <div style={{ marginTop: "14px", padding: "13px", borderRadius: "8px", background: "rgba(5, 8, 20, 0.8)", border: "1px solid rgba(118, 229, 188, 0.25)" }}>
+          <strong style={{ color: "#7ff0ca", fontSize: "13px" }}>{externalScan.scanner?.toUpperCase()} · {externalScan.summary}</strong>
+          {externalScan.findings?.length > 0 && <div style={{ marginTop: "9px", display: "grid", gap: "6px" }}>{externalScan.findings.map((finding, index) => <div key={index} style={{ color: "#d7dcf6", fontSize: "12px" }}><b>{finding.severity?.toUpperCase()}</b> · {finding.name} <span style={{ color: "#8e9ab8" }}>({finding.matched_at})</span></div>)}</div>}
+          {!!externalScan.output && <pre style={{ margin: "10px 0 0", maxHeight: "260px", overflow: "auto", whiteSpace: "pre-wrap", color: "#cdd5f5", fontSize: "11px" }}>{externalScan.output}</pre>}
+          {!!externalScan.warnings && <pre style={{ margin: "10px 0 0", maxHeight: "120px", overflow: "auto", whiteSpace: "pre-wrap", color: "#f9c7a5", fontSize: "11px" }}>{externalScan.warnings}</pre>}
+        </div>}
+      </section>
 
 
       {/* ERROR */}
