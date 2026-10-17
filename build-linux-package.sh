@@ -9,7 +9,7 @@ STAGE_DIR="$OUT_DIR/night-hunter-linux"
 rm -rf "$STAGE_DIR"
 mkdir -p "$STAGE_DIR"
 
-for item in api core modules utils dist main.py desktop_launcher.py requirement.txt install.sh README.md USER_GUIDE.md; do
+for item in api core modules utils dist main.py run.sh desktop_launcher.py requirement.txt install.sh README.md USER_GUIDE.md; do
   cp -R "$ROOT_DIR/$item" "$STAGE_DIR/"
 done
 

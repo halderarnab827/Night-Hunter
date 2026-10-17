@@ -66,7 +66,16 @@ Windows supports the core dashboard and built-in audit. For Nikto and OpenVAS, u
 
 ## 4. Linux installation
 
-### Release package
+### Option A: Instant Run (No installation required)
+
+```bash
+tar -xzf night-hunter-linux.tar.gz
+cd night-hunter-linux
+./run.sh
+```
+This automatically sets up Python dependencies and launches the full graphical Web Dashboard in your browser at `http://127.0.0.1:5000`.
+
+### Option B: System-Wide Install
 
 ```bash
 tar -xzf night-hunter-linux.tar.gz
@@ -75,21 +84,10 @@ bash install.sh
 NightHunter
 ```
 
-If `NightHunter` is not found immediately, open a new terminal or run:
-
-```bash
-source ~/.bashrc
-```
-
-### Run the dashboard locally on Linux
-
-The terminal command starts the CLI. To use the dashboard too:
-
-```bash
-python3 -m waitress --listen=127.0.0.1:5000 api.server:app
-```
-
-Open `http://127.0.0.1:5000/app` in your browser.
+- Launches the Web Dashboard by default and opens your browser.
+- Runs anywhere on your system by typing `NightHunter`.
+- Creates a desktop shortcut in your Kali Application Menu.
+- Use `NightHunter --cli` if running in an SSH or headless terminal.
 
 ## 5. Android Termux installation
 

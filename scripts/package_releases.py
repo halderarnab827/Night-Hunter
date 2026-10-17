@@ -15,6 +15,7 @@ ITEMS_TO_INCLUDE = [
     "utils",
     "dist",
     "main.py",
+    "run.sh",
     "requirement.txt",
     "README.md",
     "USER_GUIDE.md",

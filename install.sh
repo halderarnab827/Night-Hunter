@@ -27,7 +27,7 @@ mkdir -p "$APP_DIR" "$BIN_DIR"
 rm -rf "$APP_DIR/app"
 mkdir -p "$APP_DIR/app"
 
-for item in api core modules utils dist main.py desktop_launcher.py requirement.txt README.md USER_GUIDE.md; do
+for item in api core modules utils dist main.py run.sh desktop_launcher.py requirement.txt README.md USER_GUIDE.md; do
   if [ -e "$SOURCE_DIR/$item" ]; then
     cp -R "$SOURCE_DIR/$item" "$APP_DIR/app/"
   fi
@@ -56,6 +56,21 @@ chmod +x "$BIN_DIR/$APP_NAME"
 
 # Create lowercase symlink as well
 ln -sf "$BIN_DIR/$APP_NAME" "$BIN_DIR/$ALT_NAME" 2>/dev/null || true
+
+# Create desktop entry for Linux application menu
+APPS_DIR="${REAL_HOME}/.local/share/applications"
+mkdir -p "$APPS_DIR"
+cat > "$APPS_DIR/NightHunter.desktop" <<EOF
+[Desktop Entry]
+Name=Night Hunter
+Comment=Defensive Security Platform & Vulnerability Scanner
+Exec=$BIN_DIR/$APP_NAME
+Icon=$APP_DIR/app/dist/night-hunter-logo.jpeg
+Terminal=false
+Type=Application
+Categories=Network;Security;System;
+EOF
+chmod +x "$APPS_DIR/NightHunter.desktop" 2>/dev/null || true
 
 # Try to link to /usr/local/bin (which is in EVERY system's PATH)
 if [ -w "/usr/local/bin" ]; then

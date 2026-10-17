@@ -47,31 +47,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Linux and Termux archives
+      - name: Build Linux, Windows zip, and Termux archives
         run: |
           chmod +x build-linux-package.sh build-termux-package.sh
           ./build-linux-package.sh
           ./build-termux-package.sh
+          python3 scripts/package_releases.py
       - uses: actions/upload-artifact@v4
         with:
           name: terminal-downloads
           path: |
             releases/night-hunter-linux.tar.gz
             releases/night-hunter-termux.zip
+            releases/night-hunter-windows.zip
 
   release:
     needs: [windows, linux-and-termux]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: release-files
       - name: Publish GitHub Release
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           gh release delete "$TAG" --yes || true
-          gh release create "$TAG" release-files/windows-download/NightHunter.exe release-files/terminal-downloads/night-hunter-linux.tar.gz release-files/terminal-downloads/night-hunter-termux.zip --title "Night Hunter $TAG" --generate-notes --clobber || echo "Notice: GitHub release publishing requires Actions write permission under Settings > Actions > General > Workflow permissions."
+          gh release create "$TAG" \
+            release-files/windows-download/NightHunter.exe \
+            release-files/terminal-downloads/night-hunter-linux.tar.gz \
+            release-files/terminal-downloads/night-hunter-windows.zip \
+            release-files/terminal-downloads/night-hunter-termux.zip \
+            --title "Night Hunter $TAG" \
+            --notes "Night Hunter $TAG release with full Linux graphical dashboard, Phishing Intelligence Lab, Crypto Analyst, and Nmap engine." \
+            --clobber || echo "Notice: GitHub release publishing requires Actions write permission under Settings > Actions > General > Workflow permissions."
