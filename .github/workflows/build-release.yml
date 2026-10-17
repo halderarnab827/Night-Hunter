@@ -76,12 +76,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag || github.ref_name }}
         run: |
+          mkdir -p final-assets
+          find release-files -type f \( -name "*.tar.gz" -o -name "*.zip" -o -name "*.exe" \) -exec cp {} final-assets/ \;
+          echo "Found assets to upload:"
+          ls -la final-assets/
           gh release delete "$TAG" --yes || true
-          gh release create "$TAG" \
-            release-files/windows-download/NightHunter.exe \
-            release-files/terminal-downloads/night-hunter-linux.tar.gz \
-            release-files/terminal-downloads/night-hunter-windows.zip \
-            release-files/terminal-downloads/night-hunter-termux.zip \
+          gh release create "$TAG" final-assets/* \
             --title "Night Hunter $TAG" \
             --notes "Night Hunter $TAG release with full Linux graphical dashboard, Phishing Intelligence Lab, Crypto Analyst, and Nmap engine." \
-            --clobber || echo "Notice: GitHub release publishing requires Actions write permission under Settings > Actions > General > Workflow permissions."
+            --clobber
