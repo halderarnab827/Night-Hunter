@@ -72,16 +72,21 @@ jobs:
         with:
           path: release-files
       - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: Night Hunter ${{ inputs.tag || github.ref_name }}
+          body: |
+            ## Night Hunter ${{ inputs.tag || github.ref_name }}
+
+            - **Full Linux Graphical Dashboard Parity**: Includes instant `./run.sh` launcher and Kali Application Menu shortcut.
+            - **Flagship Phishing Intelligence**: Homoglyph detection, brand spoofing scores, and email header triage.
+            - **Flagship Cryptography**: Multi-hash generation (12 algorithms), hash identifier, key generator, and cipher tools.
+            - **Local Nmap Recon Engine**: Real Nmap device and open port discovery with evidence export.
+            - **Scanner Hub**: Built-in web audit with Nikto & Nuclei CLI integration.
+          files: |
+            release-files/**/*.tar.gz
+            release-files/**/*.zip
+            release-files/**/*.exe
         env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag || github.ref_name }}
-        run: |
-          mkdir -p final-assets
-          find release-files -type f \( -name "*.tar.gz" -o -name "*.zip" -o -name "*.exe" \) -exec cp {} final-assets/ \;
-          echo "Found assets to upload:"
-          ls -la final-assets/
-          gh release delete "$TAG" --yes || true
-          gh release create "$TAG" final-assets/* \
-            --title "Night Hunter $TAG" \
-            --notes "Night Hunter $TAG release with full Linux graphical dashboard, Phishing Intelligence Lab, Crypto Analyst, and Nmap engine." \
-            --clobber
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
